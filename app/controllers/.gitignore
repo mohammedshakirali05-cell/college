@@ -1,0 +1,28 @@
+# Composer dependencies
+/vendor/
+
+# Composer lock (optional: usually KEEP this)
+# composer.lock
+
+# Environment files
+.env
+.env.*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# IDE / Editor
+.vscode/
+.idea/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Cache
+/cache/
