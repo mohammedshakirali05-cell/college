@@ -2,6 +2,18 @@
 $pageTitle = 'Overall Report';
 include __DIR__ . '/../layouts/header.php';
 include __DIR__ . '/../layouts/sidebar.php';
+
+// Message handling
+$msg = $_GET['msg'] ?? '';
+$courses = array_values(array_filter(array_unique(array_map(function ($student) {
+    return $student['course'];
+}, $students))));
+sort($courses, SORT_NATURAL | SORT_FLAG_CASE);
+
+$classes = array_values(array_filter(array_unique(array_map(function ($student) {
+    return $student['class_label'];
+}, $students))));
+sort($classes, SORT_NATURAL | SORT_FLAG_CASE);
 ?>
 
 <style>
@@ -273,65 +285,67 @@ include __DIR__ . '/../layouts/sidebar.php';
         border-color: var(--accent-cyan);
         color: var(--primary-blue);
     }
-/* Search Bar */
-.report-search-wrapper {
-    position: relative;
-    width: 100%;
-    max-width: 420px;
-}
 
-.report-search-input {
-    width: 100%;
-    height: 52px;
-    border-radius: 14px;
-    border: 1px solid var(--border-light);
-    background: #fff;
-    padding: 0 52px 0 48px;
-    font-size: 0.95rem;
-    font-weight: 500;
-    color: var(--text-main);
-    transition: all 0.25s ease;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-}
+    /* Search Bar */
+    .report-search-wrapper {
+        position: relative;
+        width: 100%;
+        max-width: 420px;
+    }
 
-.report-search-input:focus {
-    outline: none;
-    border-color: var(--accent-cyan);
-    box-shadow: 0 0 0 4px rgba(34,195,227,0.12);
-}
+    .report-search-input {
+        width: 100%;
+        height: 52px;
+        border-radius: 14px;
+        border: 1px solid var(--border-light);
+        background: #fff;
+        padding: 0 52px 0 48px;
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: var(--text-main);
+        transition: all 0.25s ease;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
 
-.report-search-icon {
-    position: absolute;
-    top: 50%;
-    left: 16px;
-    transform: translateY(-50%);
-    color: var(--text-secondary);
-    font-size: 1rem;
-}
+    .report-search-input:focus {
+        outline: none;
+        border-color: var(--accent-cyan);
+        box-shadow: 0 0 0 4px rgba(34,195,227,0.12);
+    }
 
-.report-search-clear {
-    position: absolute;
-    top: 50%;
-    right: 14px;
-    transform: translateY(-50%);
-    border: none;
-    background: transparent;
-    color: var(--text-secondary);
-    cursor: pointer;
-    display: none;
-    font-size: 1rem;
-}
+    .report-search-icon {
+        position: absolute;
+        top: 50%;
+        left: 16px;
+        transform: translateY(-50%);
+        color: var(--text-secondary);
+        font-size: 1rem;
+    }
 
-.report-search-clear:hover {
-    color: var(--danger-red);
-}
+    .report-search-clear {
+        position: absolute;
+        top: 50%;
+        right: 14px;
+        transform: translateY(-50%);
+        border: none;
+        background: transparent;
+        color: var(--text-secondary);
+        cursor: pointer;
+        display: none;
+        font-size: 1rem;
+    }
 
-.search-result-info {
-    font-size: 0.85rem;
-    color: var(--text-secondary);
-    margin-top: 10px;
-    font-weight: 500;
-}
+    .report-search-clear:hover {
+        color: var(--danger-red);
+    }
+
+    .search-result-info {
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        margin-top: 10px;
+        font-weight: 500;
+    }
+
     /* Summary Badges */
     .summary-badges {
         display: flex;
@@ -346,6 +360,15 @@ include __DIR__ . '/../layouts/sidebar.php';
         border-radius: 50px;
         font-weight: 700;
         text-transform: capitalize;
+    }
+
+    /* Filter Controls */
+    .filter-controls {
+        background: var(--card-white);
+        border: 1px solid var(--border-light);
+        border-radius: 12px;
+        padding: 1rem;
+        margin-bottom: 1rem;
     }
 
     /* Responsive */
@@ -420,6 +443,18 @@ include __DIR__ . '/../layouts/sidebar.php';
 </style>
 
 <div class="container-fluid">
+    <?php if ($msg === 'installment_saved'): ?>
+        <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin: 1rem;">
+            <strong>Success!</strong> Installment payment recorded successfully. Redirecting to challan...
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <?php elseif ($msg === 'installment_invalid'): ?>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin: 1rem;">
+            <strong>Error!</strong> Invalid installment details or amount exceeds pending balance.
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <?php endif; ?>
+
     <div class="row mb-4" style="padding: 2rem 1rem 0 1rem;">
         <div class="col-12">
             <div class="card surface-card overall-report-hero">
@@ -428,7 +463,7 @@ include __DIR__ . '/../layouts/sidebar.php';
                         <div class="col-lg-8">
                             <p class="report-label-animated">📊 Overall Report</p>
                             <h1 class="report-title-animated">Fees Performance Analytics</h1>
-                            <p class="report-description-animated mb-4">Comprehensive view of all student fee payments, including total fees, concessions, installments, and pending balances. Updated in real-time from the fees module.</p>
+                            <p class="report-description-animated mb-4">Comprehensive view of all student fee payments, including total fees, concessions, installments, and pending balances. Manage installment payments directly from this page.</p>
                         </div>
                         <div class="col-lg-4">
                             <div class="d-flex flex-column gap-3">
@@ -458,7 +493,7 @@ include __DIR__ . '/../layouts/sidebar.php';
                 <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
                     <div>
                         <h5 class="mb-1">💰 Overall Fees Report</h5>
-                        <p class="text-muted mb-0">Complete fee tracking with payment status and balance details.</p>
+                        <p class="text-muted mb-0">Complete fee tracking with payment status, balance details, and installment management.</p>
                     </div>
                     <div class="d-flex flex-column flex-md-row gap-2 mt-3 mt-md-0">
                         <button class="btn export-btn" onclick="window.print()">
@@ -470,40 +505,59 @@ include __DIR__ . '/../layouts/sidebar.php';
                     </div>
                 </div>
                 <div class="card-body">
-              <!-- Professional Live Search -->
-<div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+                    <!-- Filter Controls -->
+                    <div class="filter-controls mb-4">
+                        <div class="row g-3 align-items-end">
+                            <div class="col-lg-4 col-md-6">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                                    <input id="studentSearch" type="search" class="form-control" placeholder="Name, Reg No, Mobile, Course, Year...">
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-6">
+                                <select id="courseFilter" class="form-select">
+                                    <option value="">All Courses</option>
+                                    <?php foreach ($courses as $course): ?>
+                                        <option value="<?= htmlspecialchars(strtolower($course), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($course) ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div class="col-lg-2 col-md-6">
+                                <select id="classFilter" class="form-select">
+                                    <option value="">All Years</option>
+                                    <?php foreach ($classes as $class): ?>
+                                        <option value="<?= htmlspecialchars(strtolower($class), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($class) ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div class="col-lg-2 col-md-6">
+                                <select id="statusFilter" class="form-select">
+                                    <option value="">All Status</option>
+                                    <option value="paid">Paid</option>
+                                    <option value="part paid">Part Paid</option>
+                                    <option value="pending">Pending</option>
+                                    <option value="no fees">No Fees</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-2 col-md-12">
+                                <button id="clearFiltersBtn" class="btn btn-outline-secondary w-100">Clear Filters</button>
+                            </div>
+                        </div>
+                    </div>
 
-    <div class="report-search-wrapper">
-        <i class="bi bi-search report-search-icon"></i>
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+                        <div class="search-result-info">
+                            Showing <span id="visibleRowCount"><?= count($students) ?></span>
+                            of <?= count($students) ?> records
+                        </div>
+                    </div>
 
-        <input
-            type="text"
-            id="reportSearch"
-            class="report-search-input"
-            placeholder="Search by Reg No, Candidate Name, Balance or Status..."
-            autocomplete="off"
-        >
-
-        <button
-            type="button"
-            id="clearSearch"
-            class="report-search-clear"
-        >
-            <i class="bi bi-x-circle-fill"></i>
-        </button>
-    </div>
-
-    <div class="search-result-info">
-        Showing <span id="visibleRowCount"><?= count($reportRows) ?></span>
-        of <?= count($reportRows) ?> records
-    </div>
-
-</div>
-                <div class="summary-badges">
+                    <div class="summary-badges">
                         <span class="badge bg-primary">💵 Total Fees: ₹<?= number_format($reportSummary['total_finalized'], 2) ?></span>
                         <span class="badge bg-success">✓ Paid: ₹<?= number_format($reportSummary['total_paid'], 2) ?></span>
                         <span class="badge bg-warning">⏳ Balance: ₹<?= number_format($reportSummary['total_balance'], 2) ?></span>
                     </div>
+
                     <div class="table-responsive">
                         <table class="table table-bordered align-middle table-report" id="feesReportTable">
                             <thead>
@@ -516,65 +570,58 @@ include __DIR__ . '/../layouts/sidebar.php';
                                     <th>Total Fees</th>
                                     <th>Concession Fees</th>
                                     <th>Finalized Fees</th>
-                                    <th>Fees Paid<br><small style="font-weight: 500;">Installments 1-5</small></th>
+                                    <th>Paid Amount</th>
                                     <th>Balance</th>
-                                    <th>Remarks</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php if (!empty($reportRows)): ?>
-                                    <?php foreach ($reportRows as $index => $fee): ?>
+                                <?php if (!empty($students)): ?>
+                                    <?php $slNo = 1; foreach ($students as $student): ?>
                                         <?php
-                                            $installments = sprintf(
-                                                '₹%s / ₹%s / ₹%s / ₹%s / ₹%s',
-                                                number_format($fee['installment_1'], 2),
-                                                number_format($fee['installment_2'], 2),
-                                                number_format($fee['installment_3'], 2),
-                                                number_format($fee['installment_4'], 2),
-                                                number_format($fee['installment_5'], 2)
-                                            );
-
-                                            $balance = (float)$fee['balance_fees'];
-                                            if ($balance <= 0) {
-                                                $status = '✓ Paid in Full';
-                                                $badgeClass = 'badge bg-success';
-                                            } elseif ((float)$fee['total_paid'] <= 0) {
-                                                $status = '⏳ Awaiting Payment';
-                                                $badgeClass = 'badge bg-info';
+                                            $detailsJson = htmlspecialchars(json_encode($student), ENT_QUOTES, 'UTF-8');
+                                            $feeId = $student['fee_id'] ?? null;
+                                            $status = $student['fee_status'] ?? 'No Fees';
+                                            
+                                            if ($status === 'Paid') {
+                                                $badgeClass = 'bg-success';
+                                            } elseif ($status === 'Part Paid') {
+                                                $badgeClass = 'bg-warning';
+                                            } elseif ($status === 'Pending') {
+                                                $badgeClass = 'bg-info';
                                             } else {
-                                                $status = '⏳ Pending Balance';
-                                                $badgeClass = 'badge bg-warning';
+                                                $badgeClass = 'bg-secondary';
                                             }
                                         ?>
-                                        <tr>
-                                            <td><?= $index + 1 ?></td>
-                                            <td style="font-weight: 600; color: var(--accent-cyan);"><?= htmlspecialchars($fee['admission_number'] ?: $fee['student_id']) ?></td>
-                                           <td style="font-weight: 600;">
-    <?= htmlspecialchars($fee['candidate_name'] ?: $fee['student_name']) ?>
-</td>
-
-<td>
-   <?= htmlspecialchars($fee['course'] ?? 'N/A') ?>
-</td>
-
-<td>
-    <?= htmlspecialchars($fee['academic_year'] ?? 'N/A') ?>
-</td>
-
-<td>₹<?= number_format($fee['college_total_fees'], 2) ?></td>
-                                            <td>₹<?= number_format($fee['concession_fees'], 2) ?></td>
-                                            <td style="font-weight: 600;">₹<?= number_format($fee['finalized_fees'], 2) ?></td>
+                                        <tr class="student-row"
+                                            data-search="<?= htmlspecialchars(strtolower($student['full_name'] . ' ' . $student['student_id'] . ' ' . $student['contact_mobile'] . ' ' . $student['course'] . ' ' . $student['class_label'] . ' ' . $status), ENT_QUOTES, 'UTF-8') ?>"
+                                            data-course="<?= htmlspecialchars(strtolower($student['course']), ENT_QUOTES, 'UTF-8') ?>"
+                                            data-class="<?= htmlspecialchars(strtolower($student['class_label']), ENT_QUOTES, 'UTF-8') ?>"
+                                            data-status="<?= htmlspecialchars(strtolower($status), ENT_QUOTES, 'UTF-8') ?>"
+                                            data-details="<?= $detailsJson ?>"
+                                        >
+                                            <td><?= $slNo++ ?></td>
+                                            <td style="font-weight: 600; color: var(--accent-cyan);"><?= htmlspecialchars($student['student_id']) ?></td>
+                                            <td style="font-weight: 600;"><?= htmlspecialchars($student['full_name']) ?></td>
+                                            <td><?= htmlspecialchars($student['course']) ?></td>
+                                            <td><?= htmlspecialchars($student['class_label']) ?></td>
+                                            <td>₹<?= number_format($student['total_fees'], 2) ?></td>
+                                            <td>₹<?= number_format($student['concession_fees'] ?? 0, 2) ?></td>
+                                            <td style="font-weight: 600;">₹<?= number_format($student['finalized_fees'] ?? $student['total_fees'], 2) ?></td>
+                                            <td>₹<?= number_format($student['paid_fees'], 2) ?></td>
+                                            <td style="color: var(--danger-red); font-weight: 600;">₹<?= number_format($student['pending_fees'], 2) ?></td>
+                                            <td><span class="badge <?= $badgeClass ?>"><?= htmlspecialchars($status) ?></span></td>
                                             <td>
-                                                <div class="small mb-1" style="color: var(--text-secondary);">Total Paid: ₹<?= number_format($fee['total_paid'], 2) ?></div>
-                                                <div class="text-wrap" style="max-width: 240px; font-size: 0.85rem;"><?= htmlspecialchars($installments) ?></div>
+                                                <button type="button" class="btn btn-sm btn-outline-primary view-student-btn" data-bs-toggle="modal" data-bs-target="#studentDetailsModal">
+                                                    <i class="bi bi-eye"></i> View
+                                                </button>
                                             </td>
-                                            <td style="color: var(--danger-red); font-weight: 600;">₹<?= number_format($fee['balance_fees'], 2) ?></td>
-                                            <td><span class="remark-badge <?= $badgeClass ?>"><?= $status ?></span></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 <?php else: ?>
                                     <tr>
-                                        <td colspan="9" class="text-center text-muted py-5">
+                                        <td colspan="12" class="text-center text-muted py-5">
                                             <div style="font-size: 2rem; opacity: 0.3; margin-bottom: 0.5rem;">📊</div>
                                             <strong>No fee report data available yet.</strong><br>
                                             <small>Fee records will appear here once created in the Fees module.</small>
@@ -590,113 +637,280 @@ include __DIR__ . '/../layouts/sidebar.php';
     </div>
 </div>
 
+<!-- Student Details Modal -->
+<div class="modal fade" id="studentDetailsModal" tabindex="-1" aria-labelledby="studentDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <h5 class="modal-title" id="studentDetailsModalLabel">Student Fee Details</h5>
+                    <small class="text-muted" id="modalSubtitle">Complete fee record and installment management</small>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row g-3">
+                    <div class="col-lg-6">
+                        <div class="card border-0 shadow-sm p-3 mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h6 class="mb-0">Student Profile</h6>
+                                <span class="badge bg-secondary" id="detailFeeStatus">Status</span>
+                            </div>
+                            <div class="row g-2">
+                                <div class="col-sm-6"><strong>Name</strong><p id="detailFullName" class="mb-0"></p></div>
+                                <div class="col-sm-6"><strong>Student ID</strong><p id="detailStudentId" class="mb-0"></p></div>
+                                <div class="col-sm-6"><strong>Course</strong><p id="detailCourse" class="mb-0"></p></div>
+                                <div class="col-sm-6"><strong>Year</strong><p id="detailClass" class="mb-0"></p></div>
+                                <div class="col-sm-6"><strong>Mobile</strong><p id="detailMobile" class="mb-0"></p></div>
+                                <div class="col-sm-6"><strong>Email</strong><p id="detailEmail" class="mb-0"></p></div>
+                                <div class="col-sm-6"><strong>Parent Name</strong><p id="detailParent" class="mb-0"></p></div>
+                                <div class="col-sm-6"><strong>Challan No</strong><p id="detailChallan" class="mb-0"></p></div>
+                            </div>
+                        </div>
+                        <div class="card border-0 shadow-sm p-3 mb-3">
+                            <h6 class="mb-3">Fee Summary</h6>
+                            <div class="row g-3">
+                                <div class="col-sm-6">
+                                    <div class="small text-muted">Total Fees</div>
+                                    <h5 id="detailTotalFees" class="mb-0"></h5>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="small text-muted">Concession</div>
+                                    <h5 id="detailConcessionFees" class="mb-0"></h5>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="small text-muted">Finalized Fees</div>
+                                    <h5 id="detailFinalizedFees" class="mb-0"></h5>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="small text-muted">Paid Amount</div>
+                                    <h5 id="detailPaidFees" class="mb-0"></h5>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="small text-muted">Pending Balance</div>
+                                    <h4 id="detailPendingFees" class="mb-0"></h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card border-0 shadow-sm p-3 mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h6 class="mb-0">Payment History</h6>
+                                <span class="badge bg-info" id="installmentCount">0</span>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-sm table-hover mb-0">
+                                    <thead class="table-light">
+                                        <tr><th>#</th><th>Amount</th><th>Date</th><th>Mode</th><th>Receipt</th></tr>
+                                    </thead>
+                                    <tbody id="installmentHistoryBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="card border-0 shadow-sm p-3 mb-3">
+                            <h6 class="mb-3">Record New Installment</h6>
+                            <form id="installmentForm" action="<?= BASE_URL ?>reports-installment" method="POST">
+                                <input type="hidden" name="fee_id" id="formFeeId" value="">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Amount <span class="text-danger">*</span></label>
+                                        <input type="number" step="0.01" min="0" max="99999.99" name="amount" id="installmentAmount" class="form-control" required>
+                                        <small class="text-muted" id="maxAmountHint"></small>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Payment Date</label>
+                                        <input type="date" name="paid_date" id="installmentDate" class="form-control">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Payment Mode</label>
+                                        <select name="payment_mode" class="form-select" id="paymentMode">
+                                            <option value="cash">Cash</option>
+                                            <option value="online">Online</option>
+                                            <option value="bank_transfer">Bank Transfer</option>
+                                            <option value="cheque">Cheque</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Receipt Number</label>
+                                        <input type="text" name="receipt_number" id="receiptNumber" class="form-control">
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">Remarks</label>
+                                        <textarea name="notes" id="installmentNotes" class="form-control" rows="2"></textarea>
+                                    </div>
+                                </div>
+                                <div class="mt-3 d-flex justify-content-end gap-2">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary" id="saveInstallmentBtn">Save & Proceed to Challan</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-
-    const searchInput = document.getElementById('reportSearch');
-    const clearButton = document.getElementById('clearSearch');
-    const table = document.getElementById('feesReportTable');
-    const tbody = table.querySelector('tbody');
-    const rows = tbody.querySelectorAll('tr');
+    const rows = Array.from(document.querySelectorAll('#feesReportTable tbody tr.student-row'));
+    const searchInput = document.getElementById('studentSearch');
+    const courseFilter = document.getElementById('courseFilter');
+    const classFilter = document.getElementById('classFilter');
+    const statusFilter = document.getElementById('statusFilter');
+    const clearFiltersBtn = document.getElementById('clearFiltersBtn');
+    const tableBody = document.querySelector('#feesReportTable tbody');
     const visibleCount = document.getElementById('visibleRowCount');
 
-    function filterTable() {
+    function filterAndRender() {
+        const query = searchInput.value.trim().toLowerCase();
+        const course = courseFilter.value;
+        const classValue = classFilter.value;
+        const status = statusFilter.value;
 
-        const search = searchInput.value.toLowerCase().trim();
-        let visibleRows = 0;
-
-        rows.forEach(row => {
-
-            const rowText = row.innerText.toLowerCase();
-
-            if (rowText.includes(search)) {
-                row.style.display = '';
-                visibleRows++;
-            } else {
-                row.style.display = 'none';
-            }
-
+        let visibleRows = rows.filter(row => {
+            const matchesSearch = query === '' || row.dataset.search.includes(query);
+            const matchesCourse = course === '' || row.dataset.course === course;
+            const matchesClass = classValue === '' || row.dataset.class === classValue;
+            const matchesStatus = status === '' || row.dataset.status === status;
+            return matchesSearch && matchesCourse && matchesClass && matchesStatus;
         });
 
-        visibleCount.textContent = visibleRows;
+        tableBody.innerHTML = '';
+        visibleRows.forEach((row, index) => {
+            row.querySelector('td').textContent = index + 1;
+            tableBody.appendChild(row);
+        });
 
-        clearButton.style.display = search.length > 0 ? 'block' : 'none';
+        visibleCount.textContent = visibleRows.length;
+
+        if (visibleRows.length === 0) {
+            const noDataRow = document.createElement('tr');
+            noDataRow.innerHTML = '<td colspan="12" class="text-center py-4">No matching records found.</td>';
+            tableBody.appendChild(noDataRow);
+        }
     }
 
-    searchInput.addEventListener('keyup', filterTable);
+    searchInput.addEventListener('input', filterAndRender);
+    courseFilter.addEventListener('change', filterAndRender);
+    classFilter.addEventListener('change', filterAndRender);
+    statusFilter.addEventListener('change', filterAndRender);
 
-    clearButton.addEventListener('click', function () {
+    clearFiltersBtn.addEventListener('click', () => {
         searchInput.value = '';
-        filterTable();
-        searchInput.focus();
+        courseFilter.value = '';
+        classFilter.value = '';
+        statusFilter.value = '';
+        filterAndRender();
     });
 
+    // Modal and form handling
+    document.querySelectorAll('.view-student-btn').forEach(button => {
+        button.addEventListener('click', event => {
+            const row = event.target.closest('tr');
+            const details = JSON.parse(row.dataset.details || '{}');
+            updateModal(details);
+        });
+    });
+
+    function updateModal(details) {
+        document.getElementById('detailFullName').textContent = details.full_name || 'N/A';
+        document.getElementById('detailStudentId').textContent = details.student_id || 'N/A';
+        document.getElementById('detailCourse').textContent = details.course || 'N/A';
+        document.getElementById('detailClass').textContent = details.class_label || 'N/A';
+        document.getElementById('detailMobile').textContent = details.contact_mobile || 'N/A';
+        document.getElementById('detailEmail').textContent = details.contact_email || 'N/A';
+        document.getElementById('detailParent').textContent = details.parent_name || 'N/A';
+        document.getElementById('detailChallan').textContent = details.challan_no || 'N/A';
+        document.getElementById('detailTotalFees').textContent = '₹' + (parseFloat(details.total_fees) || 0).toFixed(2);
+        document.getElementById('detailConcessionFees').textContent = '₹' + (parseFloat(details.concession_fees) || 0).toFixed(2);
+        document.getElementById('detailFinalizedFees').textContent = '₹' + (parseFloat(details.finalized_fees) || details.total_fees || 0).toFixed(2);
+        document.getElementById('detailPaidFees').textContent = '₹' + (parseFloat(details.paid_fees) || 0).toFixed(2);
+        document.getElementById('detailPendingFees').textContent = '₹' + (parseFloat(details.pending_fees) || 0).toFixed(2);
+        document.getElementById('detailFeeStatus').textContent = details.fee_status || 'N/A';
+        document.getElementById('formFeeId').value = details.fee_id || '';
+        document.getElementById('installmentAmount').max = parseFloat(details.pending_fees) || 0;
+        document.getElementById('maxAmountHint').textContent = 'Max: ₹' + (parseFloat(details.pending_fees) || 0).toFixed(2);
+        document.getElementById('installmentDate').valueAsDate = new Date();
+
+        // Update installment history
+        const historyBody = document.getElementById('installmentHistoryBody');
+        historyBody.innerHTML = '';
+        const installments = details.installments || [];
+        document.getElementById('installmentCount').textContent = installments.length;
+
+        if (installments.length) {
+            installments.forEach((inst, idx) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${idx + 1}</td>
+                    <td>₹${parseFloat(inst.amount).toFixed(2)}</td>
+                    <td>${inst.paid_date || 'N/A'}</td>
+                    <td>${inst.payment_mode || 'N/A'}</td>
+                    <td>${inst.receipt_number || 'N/A'}</td>
+                `;
+                historyBody.appendChild(row);
+            });
+        } else {
+            const row = document.createElement('tr');
+            row.innerHTML = '<td colspan="5" class="text-center text-muted py-3">No installments recorded yet.</td>';
+            historyBody.appendChild(row);
+        }
+    }
+
+    // Form submission
+    document.getElementById('installmentForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const feeId = document.getElementById('formFeeId').value;
+        const amount = parseFloat(document.getElementById('installmentAmount').value);
+        const maxAmount = parseFloat(document.getElementById('installmentAmount').max);
+
+        if (!feeId) {
+            alert('No fee record selected. Please select a student with fees.');
+            return;
+        }
+
+        if (amount <= 0 || amount > maxAmount) {
+            alert('Invalid amount. Please enter an amount between ₹0 and ₹' + maxAmount.toFixed(2));
+            return;
+        }
+
+        this.submit();
+    });
 });
 
 function exportToCSV() {
-
     const table = document.getElementById('feesReportTable');
-    let csv = [];
+    const visibleRows = Array.from(table.querySelectorAll('tbody tr')).filter(row => row.style.display !== 'none');
+    
+    if (visibleRows.length === 0) {
+        alert('No records to export.');
+        return;
+    }
 
     const headers = [];
-
-    for (let i = 0; i < table.rows[0].cells.length; i++) {
-
-        headers.push(
-            table.rows[0].cells[i].innerText
-                .replace(/\n/g, ' ')
-                .replace(/<[^>]*>/g, '')
-        );
+    for (let i = 0; i < table.rows[0].cells.length - 1; i++) {
+        headers.push(table.rows[0].cells[i].innerText.trim());
     }
 
-    csv.push(headers.join(','));
-
-    for (let i = 1; i < table.rows.length; i++) {
-
-        if (table.rows[i].style.display === 'none') {
-            continue;
+    const csv = [headers.join(',')];
+    visibleRows.forEach(row => {
+        const cells = [];
+        for (let i = 0; i < row.cells.length - 1; i++) {
+            let cellText = row.cells[i].innerText.trim().replace(/\n/g, ' ').replace(/"/g, '""');
+            cells.push('"' + cellText + '"');
         }
+        csv.push(cells.join(','));
+    });
 
-        const row = [];
-
-        for (let j = 0; j < table.rows[i].cells.length; j++) {
-
-            let cellText = table.rows[i].cells[j].innerText
-                .replace(/\n/g, ' ')
-                .replace(/<[^>]*>/g, '');
-
-            cellText = cellText.replace(/₹/g, '').trim();
-
-            row.push('"' + cellText + '"');
-        }
-
-        csv.push(row.join(','));
-    }
-
-    const csvContent = csv.join('\n');
-
-    const blob = new Blob(
-        [csvContent],
-        { type: 'text/csv;charset=utf-8;' }
-    );
-
+    const blob = new Blob([csv.join('\n')], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
-
-    const url = URL.createObjectURL(blob);
-
-    link.setAttribute('href', url);
-
-    link.setAttribute(
-        'download',
-        'fees_report_' + new Date().toISOString().split('T')[0] + '.csv'
-    );
-
-    link.style.visibility = 'hidden';
-
+    link.href = URL.createObjectURL(blob);
+    link.download = 'fees_report_' + new Date().toISOString().split('T')[0] + '.csv';
     document.body.appendChild(link);
-
     link.click();
-
     document.body.removeChild(link);
 }
 </script>

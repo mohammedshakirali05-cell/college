@@ -29,6 +29,8 @@ $role = strtolower($_SESSION['role'] ?? 'admin');
                     <span class="link-text">Students</span>
                 </a>
 
+                <!-- Student Reports removed per request -->
+
                 <a href="/college/public/index.php?url=faculty" class="<?= $currentPage === 'faculty' ? 'active' : '' ?>" title="Manage Faculty">
                     <i class="bi bi-person-workspace"></i>
                     <span class="link-text">Faculty</span>

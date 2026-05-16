@@ -345,6 +345,23 @@
             border-radius: 8px;
             overflow: hidden;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        .signature-preview.visible {
+            display: block;
+        }
+
+        .upload-file-name {
+            margin-top: 0.75rem;
+            font-size: 0.8rem;
+            color: #0b1b35;
+            font-weight: 600;
+            text-align: center;
+            word-break: break-word;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .photo-upload-container {
@@ -363,37 +380,91 @@
         }
 
         .photo-upload {
-            width: 150px;
-            height: 200px;
-            border: 2px solid var(--brand-light);
-            border-radius: 8px;
+            width: 190px;
+            height: 230px;
+            min-width: 190px;
+            min-height: 230px;
+            border: 3px dashed var(--brand-light);
+            border-radius: 18px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all 0.3s ease;
-            background: rgba(34, 195, 227, 0.02);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            background: linear-gradient(135deg, rgba(34, 195, 227, 0.03) 0%, rgba(34, 195, 227, 0.08) 100%);
             position: relative;
             overflow: hidden;
+            box-shadow: 0 6px 24px rgba(34, 195, 227, 0.12);
         }
 
         .photo-upload:hover {
             border-color: var(--brand-mid);
-            background: rgba(34, 195, 227, 0.08);
-            transform: scale(1.02);
+            border-style: solid;
+            background: linear-gradient(135deg, rgba(34, 195, 227, 0.12) 0%, rgba(34, 195, 227, 0.16) 100%);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(34, 195, 227, 0.25);
+        }
+
+        .photo-upload:active {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(34, 195, 227, 0.15);
         }
 
         .photo-placeholder {
             text-align: center;
-            padding: 1rem;
+            padding: 0.8rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
         }
 
         .photo-preview {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            border-radius: 6px;
+            border-radius: 15px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: none;
+        }
+
+        .upload-file-name {
+            margin-top: 12px;
+            font-size: 0.8rem;
+            color: #0b1b35;
+            font-weight: 600;
+            text-align: center;
+            word-break: break-word;
+            width: 100%;
+            max-height: 3rem;
+            overflow: hidden;
+        }
+
+        .document-upload .upload-file-name {
+            color: #2563eb;
+            font-weight: 600;
+            min-height: 1.2rem;
+        }
+
+        .photo-preview.visible {
+            display: block;
+            animation: fadeInImage 0.5s ease-out;
+        }
+
+        @keyframes fadeInImage {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
 
         .photo-instructions {
@@ -402,31 +473,119 @@
         }
 
         .form-actions {
-            background: rgba(34, 195, 227, 0.05);
-            padding: 2rem;
-            border-top: 1px solid rgba(29, 79, 122, 0.1);
+            background: linear-gradient(135deg, rgba(34, 195, 227, 0.08) 0%, rgba(34, 195, 227, 0.04) 100%);
+            padding: 2.5rem;
+            border-top: 2px solid rgba(34, 195, 227, 0.15);
+            border-radius: 0 0 16px 16px;
             display: flex;
-            gap: 1rem;
+            gap: 1.2rem;
             justify-content: center;
             flex-wrap: wrap;
+            animation: slideUpIn 0.6s ease-out;
+        }
+
+        @keyframes slideUpIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .btn-submit {
             background: linear-gradient(135deg, #1d3f7a 0%, #22c3e3 100%);
             color: white;
             border: none;
-            padding: 0.9rem 2.5rem;
-            border-radius: 10px;
-            font-weight: 600;
+            padding: 1rem 3rem;
+            border-radius: 12px;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             font-size: 1rem;
-            box-shadow: 0 4px 15px rgba(34, 195, 227, 0.3);
+            box-shadow: 0 6px 20px rgba(34, 195, 227, 0.35);
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            min-width: 220px;
+            justify-content: center;
+        }
+
+        .btn-submit::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: left 0.4s ease;
+            z-index: -1;
+        }
+
+        .btn-submit:hover::before {
+            left: 100%;
         }
 
         .btn-submit:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(34, 195, 227, 0.4);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(34, 195, 227, 0.45);
+        }
+
+        .btn-submit:active {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(34, 195, 227, 0.35);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-submit i {
+            font-size: 1.1rem;
+            animation-duration: 2s;
+        }
+
+        .btn-submit.loading i {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .btn-draft {
+            background: rgba(34, 195, 227, 0.1);
+            color: var(--brand-mid);
+            border: 2px solid var(--brand-light);
+            padding: 0.9rem 2.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-draft:hover {
+            background: rgba(34, 195, 227, 0.2);
+            border-color: var(--brand-mid);
+            transform: translateY(-2px);
+        }
+
+        .btn-draft:active {
+            transform: translateY(0);
         }
 
         .btn-draft {
@@ -1167,6 +1326,7 @@
                             <p style="color: var(--text-primary); font-weight: 600; margin-bottom: 0.3rem;">Upload SSLC Marks Card</p>
                             <p style="color: var(--text-secondary); font-size: 0.8rem; margin-bottom: 0;">PDF or Image (Max 5MB)</p>
                             <input type="file" id="sslcMarksInput" name="sslc_marks_card" accept=".pdf,.jpg,.jpeg,.png" required onchange="validateFile(this)">
+                            <div class="upload-file-name" id="sslcMarksName"></div>
                         </div>
                     </div>
                     <div class="form-group">
@@ -1176,6 +1336,7 @@
                             <p style="color: var(--text-primary); font-weight: 600; margin-bottom: 0.3rem;">Upload PUC/ITI/Diploma Marks Card</p>
                             <p style="color: var(--text-secondary); font-size: 0.8rem; margin-bottom: 0;">PDF or Image (Max 5MB)</p>
                             <input type="file" id="pucMarksInput" name="puc_marks_card" accept=".pdf,.jpg,.jpeg,.png" required onchange="validateFile(this)">
+                            <div class="upload-file-name" id="pucMarksName"></div>
                         </div>
                     </div>
                     <div class="form-group">
@@ -1185,6 +1346,7 @@
                             <p style="color: var(--text-primary); font-weight: 600; margin-bottom: 0.3rem;">Upload Income Certificate</p>
                             <p style="color: var(--text-secondary); font-size: 0.8rem; margin-bottom: 0;">PDF or Image (Max 5MB)</p>
                             <input type="file" id="incomeCertInput" name="income_certificate" accept=".pdf,.jpg,.jpeg,.png" required onchange="validateFile(this)">
+                            <div class="upload-file-name" id="incomeCertName"></div>
                         </div>
                     </div>
                     <div class="form-group">
@@ -1194,6 +1356,7 @@
                             <p style="color: var(--text-primary); font-weight: 600; margin-bottom: 0.3rem;">Upload Aadhar Card</p>
                             <p style="color: var(--text-secondary); font-size: 0.8rem; margin-bottom: 0;">PDF or Image (Max 5MB)</p>
                             <input type="file" id="aadharCardInput" name="aadhar_card" accept=".pdf,.jpg,.jpeg,.png" required onchange="validateFile(this)">
+                            <div class="upload-file-name" id="aadharCardName"></div>
                         </div>
                     </div>
                 </div>
@@ -1248,6 +1411,7 @@
                             <p style="color: var(--text-secondary); font-size: 0.8rem; margin-bottom: 0;">Image file (Max 2MB)</p>
                             <input type="file" id="candidateSignInput" name="candidate_signature" accept="image/*" required onchange="validateSignatureFile(this); previewSignature(event, 'candidateSignPreview')">
                             <img id="candidateSignPreview" class="signature-preview" style="display: none;" src="" alt="Candidate Signature Preview">
+                            <div class="upload-file-name" id="candidateSignName">No file selected</div>
                         </div>
                     </div>
                     <div class="form-group">
@@ -1258,6 +1422,7 @@
                             <p style="color: var(--text-secondary); font-size: 0.8rem; margin-bottom: 0;">Image file (Max 2MB)</p>
                             <input type="file" id="parentSignInput" name="parent_signature" accept="image/*" required onchange="validateSignatureFile(this); previewSignature(event, 'parentSignPreview')">
                             <img id="parentSignPreview" class="signature-preview" style="display: none;" src="" alt="Parent Signature Preview">
+                            <div class="upload-file-name" id="parentSignName">No file selected</div>
                         </div>
                     </div>
                 </div>
@@ -1293,31 +1458,62 @@
         return prefix + timestamp;
     }
 
-    // Preview Photo
+    // Preview Photo with Enhanced Validation
     function previewPhoto(event) {
         const file = event.target.files[0];
         if (file) {
+            // Validate file first
+            if (!validatePhotoFile(event.target)) {
+                return;
+            }
+
             const reader = new FileReader();
             reader.onload = function(e) {
                 const preview = document.getElementById('photoPreview');
+                const placeholder = document.querySelector('.photo-placeholder');
+                
                 preview.src = e.target.result;
-                preview.style.display = 'block';
+                preview.classList.add('visible');
+                
+                if (placeholder) {
+                    placeholder.style.display = 'none';
+                }
+                
+                showNotification('Photo uploaded successfully!', 'success');
             }
             reader.readAsDataURL(file);
         }
     }
 
-    // Preview Signature
+    // Preview Signature with Enhanced Animation
     function previewSignature(event, previewId) {
         const file = event.target.files[0];
         if (file) {
+            if (!validateSignatureFile(event.target)) {
+                return;
+            }
+
             const reader = new FileReader();
             reader.onload = function(e) {
                 const preview = document.getElementById(previewId);
-                preview.src = e.target.result;
-                preview.style.display = 'block';
+                if (preview) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    preview.classList.add('visible');
+                    preview.style.animation = 'fadeInImage 0.5s ease-out';
+                }
+
+                const nameId = previewId === 'candidateSignPreview' ? 'candidateSignName' : 'parentSignName';
+                updateSignatureName(nameId, file.name);
             }
             reader.readAsDataURL(file);
+        }
+    }
+
+    function updateSignatureName(nameId, fileName) {
+        const label = document.getElementById(nameId);
+        if (label) {
+            label.textContent = fileName || 'No file selected';
         }
     }
 
@@ -1327,49 +1523,242 @@
         if (file) {
             const maxSize = 5 * 1024 * 1024; // 5MB for documents
             if (file.size > maxSize) {
-                alert('File size must be less than 5MB');
+                showNotification('File size must be less than 5MB', 'error');
                 input.value = '';
+                updateDocumentName(input, '');
                 return false;
             }
 
             const allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
             if (!allowedTypes.includes(file.type)) {
-                alert('Please upload PDF or image files only');
+                showNotification('Please upload PDF or image files only', 'error');
                 input.value = '';
+                updateDocumentName(input, '');
                 return false;
             }
+
+            updateDocumentName(input, file.name);
         }
         return true;
     }
 
-    // Validate Photo File
+    function updateDocumentName(input, fileName) {
+        const idMap = {
+            'sslcMarksInput': 'sslcMarksName',
+            'pucMarksInput': 'pucMarksName',
+            'incomeCertInput': 'incomeCertName',
+            'aadharCardInput': 'aadharCardName'
+        };
+        const nameId = idMap[input.id];
+        if (nameId) {
+            const label = document.getElementById(nameId);
+            if (label) {
+                label.textContent = fileName || 'No file selected';
+            }
+        }
+    }
+
+    // Validate Photo File with Clear Feedback
     function validatePhotoFile(input) {
         const file = input.files[0];
         if (file) {
             const maxSize = 2 * 1024 * 1024; // 2MB for photos
             if (file.size > maxSize) {
-                alert('Photo file size must be less than 2MB');
+                showNotification('Photo file size must be less than 2MB. Current: ' + (file.size / (1024 * 1024)).toFixed(2) + 'MB', 'error');
                 input.value = '';
                 return false;
             }
 
             const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
             if (!allowedTypes.includes(file.type)) {
-                alert('Please upload JPEG or PNG images only');
+                showNotification('Please upload JPEG or PNG images only. Uploaded: ' + file.type, 'error');
                 input.value = '';
                 return false;
             }
+
+            // Check dimensions for passport photo (optional but recommended)
+            const img = new Image();
+            img.onload = function() {
+                // Passport photo: 3.5 x 4.5 cm typically, but allow flexibility
+                if (this.height < 100 || this.width < 80) {
+                    showNotification('Image might be too small for a passport photo. Recommended: at least 100x80 pixels', 'warning');
+                }
+            };
+            img.src = URL.createObjectURL(file);
         }
         return true;
     }
 
-    // Calculate Percentage
-    function calculatePercentage(index) {
-        const marks = parseFloat(document.querySelector(`[name="marks_${index}"]`).value) || 0;
-        const total = parseFloat(document.querySelector(`[name="total_${index}"]`).value) || 100;
-        const percentage = ((marks / total) * 100).toFixed(2);
-        document.querySelector(`[name="percentage_${index}"]`).value = percentage + '%';
+    // Show Notification Toast
+    function showNotification(message, type = 'success') {
+        const container = document.getElementById('notificationContainer') || createNotificationContainer();
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        
+        const icon = type === 'success' ? 'check-circle-fill' : type === 'warning' ? 'exclamation-triangle-fill' : 'exclamation-circle-fill';
+        
+        notification.innerHTML = `
+            <div class="notification-content">
+                <i class="bi bi-${icon}"></i>
+                <span>${message}</span>
+            </div>
+            <button class="notification-close" onclick="this.parentElement.remove()">
+                <i class="bi bi-x"></i>
+            </button>
+        `;
+        
+        container.appendChild(notification);
+        
+        // Auto-remove after 5 seconds
+        setTimeout(() => {
+            notification.classList.add('notification-dismiss');
+            setTimeout(() => notification.remove(), 300);
+        }, 5000);
     }
+
+    function createNotificationContainer() {
+        const container = document.createElement('div');
+        container.id = 'notificationContainer';
+        container.className = 'notification-container';
+        document.body.appendChild(container);
+        return container;
+    }
+
+    // Add CSS for notifications
+    const notificationStyles = document.createElement('style');
+    notificationStyles.textContent = `
+        .notification-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            max-width: 400px;
+        }
+
+        .notification {
+            background: white;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 12px;
+            box-shadow: 0 6px 20px rgba(6, 17, 42, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            animation: slideInRight 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border-left: 4px solid #22c3e3;
+        }
+
+        .notification-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+        }
+
+        .notification-content i {
+            font-size: 18px;
+            min-width: 20px;
+        }
+
+        .notification-success {
+            border-left-color: #10b981;
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+        }
+
+        .notification-success i {
+            color: #10b981;
+        }
+
+        .notification-success span {
+            color: #065f46;
+            font-weight: 500;
+        }
+
+        .notification-error {
+            border-left-color: #ef4444;
+            background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+        }
+
+        .notification-error i {
+            color: #ef4444;
+        }
+
+        .notification-error span {
+            color: #991b1b;
+            font-weight: 500;
+        }
+
+        .notification-warning {
+            border-left-color: #f59e0b;
+            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+        }
+
+        .notification-warning i {
+            color: #f59e0b;
+        }
+
+        .notification-warning span {
+            color: #92400e;
+            font-weight: 500;
+        }
+
+        .notification-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            opacity: 0.6;
+            transition: opacity 0.2s;
+        }
+
+        .notification-close:hover {
+            opacity: 1;
+        }
+
+        .notification-close i {
+            color: #6b7280;
+            font-size: 16px;
+        }
+
+        .notification-dismiss {
+            animation: slideOutRight 0.3s ease-out;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(400px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideOutRight {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(400px);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .notification-container {
+                left: 10px;
+                right: 10px;
+                max-width: none;
+            }
+        }
+    `;
+    document.head.appendChild(notificationStyles);
 
     // Save as Draft
     function saveDraft() {
@@ -1397,24 +1786,58 @@
         }
     });
 
-    // Form Validation
+    // Form Submission with Enhanced Validation & Feedback
     document.getElementById('admissionFormMain').addEventListener('submit', function(e) {
         e.preventDefault();
         
+        // Validate required files are uploaded
+        const requiredFiles = ['photoInput', 'sslcMarksInput', 'pucMarksInput', 'incomeCertInput', 'aadharCardInput', 'candidateSignInput', 'parentSignInput'];
+        let allFilesUploaded = true;
+        
+        for (let fileId of requiredFiles) {
+            const fileInput = document.getElementById(fileId);
+            if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+                allFilesUploaded = false;
+                showNotification(`Please upload: ${fileId.replace('Input', '').replace(/([A-Z])/g, ' $1').trim()}`, 'error');
+                break;
+            }
+        }
+
+        if (!allFilesUploaded) {
+            return false;
+        }
+
+        // Validate all required checkboxes
+        const declaration1 = document.getElementById('declaration1');
+        const declaration2 = document.getElementById('declaration2');
+        const declaration3 = document.getElementById('declaration3');
+
+        if (!declaration1?.checked || !declaration2?.checked || !declaration3?.checked) {
+            showNotification('Please accept all declarations to proceed', 'error');
+            document.querySelector('.form-check')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return false;
+        }
+
         if (!this.checkValidity()) {
             e.stopPropagation();
             this.reportValidity();
+            showNotification('Please fill all required fields', 'error');
             return false;
         }
         
         // Show loading state
         const submitBtn = this.querySelector('button[type="submit"]');
         const originalText = submitBtn.innerHTML;
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Submitting...';
+        const originalBtnState = submitBtn.disabled;
         
-        // Submit the form
-        this.submit();
+        submitBtn.disabled = true;
+        submitBtn.classList.add('loading');
+        submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Submitting...';
+        
+        // Small delay for better UX
+        setTimeout(() => {
+            this.submit();
+        }, 300);
     });
 </script>
 

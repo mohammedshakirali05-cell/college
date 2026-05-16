@@ -189,7 +189,12 @@ class FeesController
         $displayAmount = (float)$fee['finalized_fees'];
         $installmentLabel = '';
 
-        if ($installmentNumber > 0) {
+        // Check if paid_amount is passed from Reports page installment submission
+        $paidAmount = (float)($_GET['paid_amount'] ?? 0);
+        if ($paidAmount > 0) {
+            $displayAmount = $paidAmount;
+            $installmentLabel = 'Installment Payment from Reports';
+        } elseif ($installmentNumber > 0) {
             $installmentKey = "installment_$installmentNumber";
             if (isset($fee[$installmentKey]) && $fee[$installmentKey] > 0) {
                 $displayAmount = (float)$fee[$installmentKey];

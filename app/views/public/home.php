@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -10,22 +10,22 @@
 
     <style>
         :root {
-            --page-background: linear-gradient(180deg, #f5f8ff 0%, #e6efff 100%);
-            --page-surface: #ffffff;
-            --surface-soft: rgba(255, 255, 255, 0.92);
-            --surface-strong: rgba(15, 23, 42, 0.04);
-            --brand-dark: #091a33;
-            --brand-mid: #1d3f7a;
-            --brand-light: #4f8bfd;
-            --brand-soft: #dbe8ff;
-            --accent: #22c3e3;
-            --accent-soft: #d2f7ff;
-            --glass-bg: rgba(255, 255, 255, 0.82);
-            --glass-border: rgba(79, 139, 253, 0.18);
-            --shadow-soft: 0 24px 60px rgba(9, 26, 51, 0.08);
-            --shadow-strong: 0 30px 80px rgba(9, 26, 51, 0.14);
-            --text-dark: #0f172a;
-            --text-muted: #52647a;
+            --page-background: linear-gradient(180deg, #082a40 0%, #0a4d68 42%, #0d5f7d 100%);
+            --page-surface: #091525;
+            --surface-soft: rgba(255, 255, 255, 0.08);
+            --surface-strong: rgba(0, 0, 0, 0.28);
+            --brand-dark: #ffffff;
+            --brand-mid: #22d5c5;
+            --brand-light: #71f0e8;
+            --brand-soft: rgba(34,213,197,0.14);
+            --accent: #ffd369;
+            --accent-soft: rgba(255,211,105,0.18);
+            --glass-bg: rgba(255, 255, 255, 0.12);
+            --glass-border: rgba(255,255,255,0.14);
+            --shadow-soft: 0 24px 60px rgba(0, 0, 0, 0.24);
+            --shadow-strong: 0 36px 90px rgba(0, 0, 0, 0.32);
+            --text-dark: #091525;
+            --text-muted: #bac5cc;
         }
 
         * {
@@ -34,8 +34,8 @@
 
         body {
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            background: radial-gradient(circle at top left, rgba(79, 139, 253, 0.16), transparent 30%),
-                        radial-gradient(circle at bottom right, rgba(34, 195, 227, 0.12), transparent 24%),
+            background: radial-gradient(circle at top left, rgba(34,213,197,0.22), transparent 20%),
+                        radial-gradient(circle at bottom right, rgba(255,255,255,0.14), transparent 18%),
                         var(--page-background);
             color: var(--text-dark);
             overflow-x: hidden;
@@ -43,10 +43,10 @@
 
         /* Enhanced Navbar */
         .navbar {
-            backdrop-filter: blur(24px);
-            background: rgba(255, 255, 255, 0.72) !important;
-            border-bottom: 1px solid rgba(79, 139, 253, 0.12);
-            box-shadow: 0 18px 45px rgba(9, 26, 51, 0.06);
+            backdrop-filter: blur(18px);
+            background: rgba(255,255,255,0.10) !important;
+            border-bottom: 1px solid rgba(255,255,255,0.10);
+            box-shadow: 0 14px 34px rgba(0, 0, 0, 0.18);
             padding: 1rem 0;
             transition: all 0.3s ease;
         }
@@ -54,39 +54,36 @@
         .navbar-brand {
             font-weight: 800;
             font-size: 1.45rem;
-            background: linear-gradient(135deg, #1d3f7a 0%, #22c3e3 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: var(--brand-dark);
         }
 
         .navbar-nav .nav-link {
-            color: #1d3f7a;
+            color: rgba(255,255,255,0.9);
             font-weight: 600;
             transition: color 0.2s ease;
         }
 
         .navbar-nav .nav-link:hover {
-            color: #22c3e3 !important;
+            color: var(--brand-light) !important;
         }
 
         .btn-indigo {
-            background: linear-gradient(135deg, #1d3f7a 0%, #22c3e3 100%) !important;
-            color: #fff !important;
-            border: none;
-            box-shadow: 0 14px 30px rgba(34, 195, 227, 0.25);
+            background: linear-gradient(135deg, #f2b84b 0%, #c68b38 100%) !important;
+            color: #0f1720 !important;
+            border: 1px solid rgba(255,255,255,0.12);
+            box-shadow: 0 12px 34px rgba(117, 74, 1, 0.18);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         .btn-indigo:hover {
             transform: translateY(-3px);
-            box-shadow: 0 22px 42px rgba(34, 195, 227, 0.3);
+            box-shadow: 0 24px 46px rgba(5,111,95,0.3);
         }
 
         /* Hero Section Redesign */
         .hero-section {
-            background: linear-gradient(180deg, #f8fbff 0%, #eff8ff 45%, #e3f3ff 100%);
-            color: var(--brand-dark);
+            background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
+            color: #ffffff;
             padding: 110px 0 90px;
             position: relative;
             overflow: hidden;
@@ -105,7 +102,7 @@
         .hero-section::before {
             width: 380px;
             height: 380px;
-            background: rgba(34, 195, 227, 0.25);
+            background: rgba(34,213,197,0.16);
             top: -80px;
             right: -80px;
             animation: glowPulse 10s ease-in-out infinite alternate;
@@ -114,7 +111,7 @@
         .hero-section::after {
             width: 260px;
             height: 260px;
-            background: rgba(79, 139, 253, 0.20);
+            background: rgba(255,211,105,0.18);
             bottom: 20px;
             left: -80px;
             animation: glowPulse 9s ease-in-out infinite alternate-reverse;
@@ -129,14 +126,14 @@
         }
 
         .hero-badge span {
-            background: rgba(34, 195, 227, 0.12);
-            color: #1d3f7a;
+            background: rgba(255,255,255,0.88);
+            color: var(--text-dark);
             padding: 0.75rem 1.1rem;
             border-radius: 999px;
             font-size: 0.92rem;
             font-weight: 600;
             letter-spacing: 0.02em;
-            border: 1px solid rgba(34, 195, 227, 0.22);
+            border: 1px solid rgba(255,255,255,0.95);
         }
 
         .hero-title {
@@ -148,29 +145,19 @@
             position: relative;
         }
 
-        .hero-title .hero-gradient {
-            display: block;
-            background: linear-gradient(135deg, #ff9a8b 0%, #fad0c4 50%, #a18cd1 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
+        .hero-title .hero-gradient,
         .hero-title .hero-accent {
             display: block;
-            background: linear-gradient(135deg, #1d3f7a 0%, #22c3e3 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: var(--text-dark);
         }
 
         .hero-subtitle {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: 400;
-            color: var(--text-muted);
+            color: rgba(15,23,32,0.76);
             opacity: 0.95;
             margin-bottom: 2.2rem;
-            line-height: 1.75;
+            line-height: 1.7;
             max-width: 620px;
         }
 
@@ -184,27 +171,27 @@
         }
 
         .hero-buttons .btn-primary {
-            background: linear-gradient(135deg, #1d3f7a 0%, #22c3e3 100%);
-            color: #ffffff;
-            box-shadow: 0 20px 40px rgba(34, 195, 227, 0.25);
+            background: var(--accent);
+            color: var(--text-dark);
+            box-shadow: 0 18px 38px rgba(15, 23, 42, 0.18);
         }
 
         .hero-buttons .btn-primary:hover {
             transform: translateY(-4px) scale(1.02);
-            box-shadow: 0 24px 48px rgba(34, 195, 227, 0.35);
+            box-shadow: 0 24px 48px rgba(15, 23, 42, 0.24);
         }
 
         .hero-buttons .btn-outline-light {
-            color: var(--brand-dark);
-            border: 1px solid rgba(15, 23, 42, 0.12);
-            background: rgba(255,255,255,0.92);
+            color: #ffffff;
+            border: 1px solid rgba(255,255,255,0.75);
+            background: rgba(255,255,255,0.15);
         }
 
         .hero-buttons .btn-outline-light:hover {
-            background: #ffffff;
-            color: #1d3f7a;
+            background: rgba(255,255,255,0.32);
+            color: #ffffff;
             transform: translateY(-4px);
-            box-shadow: 0 18px 35px rgba(15, 23, 42, 0.1);
+            box-shadow: 0 18px 35px rgba(15, 23, 42, 0.15);
         }
 
         /* Features Section */
@@ -220,7 +207,7 @@
             text-align: center;
             box-shadow: var(--shadow-soft);
             transition: all 0.4s ease;
-            border: 1px solid rgba(79, 139, 253, 0.12);
+            border: 1px solid rgba(14,165,163,0.10);
             height: 100%;
         }
 
@@ -238,9 +225,9 @@
             justify-content: center;
             margin: 0 auto 1.7rem;
             font-size: 2rem;
-            background: linear-gradient(135deg, #1d3f7a 0%, #22c3e3 100%);
+            background: linear-gradient(135deg, var(--brand-mid) 0%, var(--accent) 100%);
             color: white;
-            box-shadow: 0 12px 28px rgba(34, 195, 227, 0.18);
+            box-shadow: 0 12px 28px rgba(14,165,163,0.16);
         }
 
         .feature-title {
@@ -251,49 +238,57 @@
         }
 
         .feature-description {
-            color: #475569;
+            color: var(--text-muted);
             line-height: 1.6;
         }
 
         /* Enhanced 3D Modules */
         .modules-section {
             padding: 100px 0;
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            background: transparent;
         }
 
         .modules-container {
-            background: rgba(255, 255, 255, 0.94);
+            background: rgba(255, 255, 255, 0.98);
             backdrop-filter: blur(24px);
-            border: 1px solid rgba(79, 139, 253, 0.14);
+            border: 1px solid rgba(34,193,183,0.16);
             border-radius: 36px;
-            padding: 3rem;
-            box-shadow: var(--shadow-soft);
+            padding: 2.5rem;
+            box-shadow: 0 40px 90px rgba(15, 23, 42, 0.08);
             position: relative;
             overflow: hidden;
+        }
+
+        .modules-container h4 {
+            color: var(--text-dark);
+            letter-spacing: -0.02em;
+            margin-bottom: 1.75rem;
+            font-size: 1.38rem;
+            font-weight: 800;
         }
 
         .modules-container::after {
             content: '';
             position: absolute;
-            width: 220px;
-            height: 220px;
+            width: 240px;
+            height: 240px;
             border-radius: 50%;
-            background: rgba(34, 195, 227, 0.12);
+            background: rgba(48,226,207,0.16);
             bottom: -80px;
             right: -80px;
             z-index: 0;
         }
 
         .module-card-3d {
-            background: #ffffff;
-            border-radius: 28px;
-            padding: 2rem 1.5rem;
+            background: rgba(255,255,255,0.96);
+            border-radius: 24px;
+            padding: 1.6rem 1.4rem;
             text-align: center;
-            color: var(--brand-dark);
+            color: var(--text-dark);
             transition: transform 0.4s ease, box-shadow 0.4s ease, background 0.4s ease;
             cursor: pointer;
-            height: 100%;
-            border: 1px solid rgba(79, 139, 253, 0.14);
+            min-height: 180px;
+            border: 1px solid rgba(255,255,255,0.55);
             text-decoration: none;
             display: flex;
             flex-direction: column;
@@ -302,6 +297,7 @@
             position: relative;
             overflow: hidden;
             z-index: 1;
+            box-shadow: 0 26px 45px rgba(15, 23, 42, 0.08);
         }
 
         .module-card-3d::before {
@@ -311,16 +307,16 @@
             left: -40%;
             width: 180px;
             height: 180px;
-            background: radial-gradient(circle, rgba(34,195,227,0.24), transparent 65%);
+            background: radial-gradient(circle, rgba(34,193,183,0.24), transparent 65%);
             opacity: 0;
             transition: opacity 0.35s ease;
             z-index: 0;
         }
 
         .module-card-3d:hover {
-            transform: translateY(-16px) scale(1.03);
-            box-shadow: var(--shadow-strong);
-            background: #f8fbff;
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 0 32px 80px rgba(15, 23, 42, 0.16);
+            background: linear-gradient(180deg, #ffffff 0%, #f0fffb 100%);
         }
 
         .module-card-3d:hover::before {
@@ -328,27 +324,36 @@
         }
 
         .module-card-3d i {
-            font-size: 2.4rem;
-            color: #1d3f7a;
-            margin-bottom: 1.15rem;
-            transition: transform 0.3s ease, color 0.3s ease;
+            width: 56px;
+            height: 56px;
+            line-height: 56px;
+            font-size: 1.35rem;
+            color: #ffffff;
+            margin-bottom: 1rem;
+            transition: transform 0.3s ease, color 0.3s ease, background 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--brand-mid) 0%, var(--brand-light) 100%);
+            box-shadow: 0 14px 34px rgba(34,193,183,0.2);
         }
 
         .module-card-3d:hover i {
             transform: scale(1.14);
-            color: #22c3e3;
+            color: var(--brand-light);
         }
 
         .module-card-3d span {
             font-weight: 700;
             font-size: 1rem;
-            color: var(--brand-dark);
+            color: var(--text-dark);
             transition: color 0.3s ease;
             z-index: 1;
         }
 
         .module-card-3d:hover span {
-            color: #1d3f7a;
+            color: var(--brand-mid);
         }
 
         /* Stats Section */
@@ -383,65 +388,117 @@
 
         /* Team Section Enhancement */
         .team-section {
-            padding: 100px 0;
-            background: white;
+            padding: 100px 0 60px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0.01) 100%);
         }
 
         .team-card {
             border: none;
-            border-radius: 32px;
-            box-shadow: var(--shadow-soft);
-            overflow: hidden;
+            border-radius: 8px;
+            background: transparent;
+            overflow: visible;
         }
 
         .team-header {
-            background: var(--primary-gradient);
-            color: white;
-            padding: 3rem 2rem;
+            color: var(--text-dark);
+            padding: 1rem 0 2rem;
             text-align: center;
         }
 
         .team-title {
-            font-size: 2.5rem;
-            font-weight: 800;
-            margin-bottom: 1rem;
+            font-size: 2.6rem;
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
         }
 
         .team-subtitle {
-            font-size: 1.1rem;
-            opacity: 0.9;
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-bottom: 1.6rem;
         }
 
-        .developer-grid {
-            padding: 3rem 2rem;
+        .lead-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            background: linear-gradient(90deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+            padding: 0.9rem 1.6rem;
+            border-radius: 999px;
+            box-shadow: 0 8px 20px rgba(2,6,23,0.55);
+            border: 1px solid rgba(255,255,255,0.04);
+            margin: 0 auto 2rem;
+            max-width: 520px;
         }
+
+        .lead-badge img {
+            width: 48px;
+            height: 48px;
+            border-radius: 999px;
+            object-fit: cover;
+            border: 2px solid rgba(255,255,255,0.06);
+        }
+
+        .lead-avatar-fallback {
+            width: 48px;
+            height: 48px;
+            border-radius: 999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-dark);
+            background: linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+            font-weight: 700;
+            margin-right: 0.6rem;
+            border: 2px solid rgba(255,255,255,0.04);
+        }
+
+        .lead-name { font-weight: 800; color: var(--text-dark); }
+
+        .lead-role { font-size: 0.85rem; color: var(--text-muted); }
+
+        .developer-grid { padding: 1.5rem 0; }
 
         .developer-item {
-            background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
-            padding: 1.5rem 2rem;
-            border-radius: 16px;
+            background: rgba(255,255,255,0.03);
+            padding: 1.6rem 1.6rem;
+            border-radius: 14px;
             margin-bottom: 1rem;
-            border-left: 5px solid #667eea;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            box-shadow: 0 8px 20px rgba(2,6,23,0.6);
+            text-align: center;
         }
 
         .developer-item:hover {
-            transform: translateX(8px) translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-            background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+            transform: translateY(-8px);
+            box-shadow: 0 18px 40px rgba(2,6,23,0.75);
+        }
+
+        .developer-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, var(--brand-light), var(--brand-mid));
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            margin-bottom: 0.9rem;
+            box-shadow: 0 8px 20px rgba(2,6,23,0.6);
         }
 
         .developer-name {
             font-weight: 700;
             color: var(--text-dark);
-            font-size: 1.1rem;
+            font-size: 1rem;
         }
 
         .developer-role {
-            font-size: 0.9rem;
-            color: #64748b;
-            margin-top: 0.25rem;
+            font-size: 0.82rem;
+            color: var(--brand-light);
+            margin-top: 0.45rem;
+            font-weight: 600;
         }
 
         /* Warning Section */
@@ -508,6 +565,68 @@
             50% { opacity: 0.85; }
         }
 
+        /* Extreme animated background */
+        .bg-animated {
+            position: fixed;
+            inset: 0;
+            z-index: -3;
+            pointer-events: none;
+            background: radial-gradient(circle at 10% 20%, rgba(242,184,75,0.20), transparent 14%),
+                        radial-gradient(circle at 80% 80%, rgba(255,255,255,0.24), transparent 16%),
+                        linear-gradient(180deg, rgba(14,24,45,0.82), rgba(8,15,28,0.96));
+            mix-blend-mode: screen;
+            filter: blur(28px) saturate(1.1);
+            opacity: 0.94;
+            animation: hueRotate 24s linear infinite, bgFloat 20s ease-in-out infinite alternate;
+            will-change: transform, filter, opacity;
+        }
+
+        .bg-animated::before {
+            content: '';
+            position: absolute;
+            left: -10%;
+            top: -20%;
+            width: 60vmax;
+            height: 60vmax;
+            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.18), transparent 20%),
+                        radial-gradient(circle at 70% 70%, rgba(48,226,207,0.14), transparent 30%);
+            transform: translate3d(0,0,0);
+            animation: blobMove 26s linear infinite;
+            filter: blur(44px) contrast(1.02);
+            opacity: 0.92;
+        }
+
+        .bg-animated::after {
+            content: '';
+            position: absolute;
+            right: -15%;
+            bottom: -15%;
+            width: 50vmax;
+            height: 50vmax;
+            background: radial-gradient(circle, rgba(255,255,255,0.12) 0, transparent 55%);
+            animation: blobMove 32s linear reverse infinite;
+            filter: blur(86px) brightness(1.05);
+        }
+
+        @keyframes hueRotate {
+            0% { filter: blur(28px) saturate(1) hue-rotate(0deg); }
+            50% { filter: blur(28px) saturate(1.06) hue-rotate(30deg); }
+            100% { filter: blur(28px) saturate(1) hue-rotate(0deg); }
+        }
+
+        @keyframes blobMove {
+            0% { transform: translate3d(0,0,0) scale(1); }
+            25% { transform: translate3d(6vw, -4vw, 0) scale(1.02); }
+            50% { transform: translate3d(-4vw, 6vw, 0) scale(1.03); }
+            75% { transform: translate3d(4vw, -6vw, 0) scale(1.01); }
+            100% { transform: translate3d(0,0,0) scale(1); }
+        }
+
+        @keyframes bgFloat {
+            0% { transform: translateY(0) scale(1); }
+            100% { transform: translateY(-6vh) scale(1.01); }
+        }
+
         .animate-fade-in {
             animation: fadeInUp 0.65s ease-out both;
         }
@@ -557,6 +676,7 @@
     </style>
 </head>
 <body>
+    <div class="bg-animated" aria-hidden="true"></div>
 
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
     <div class="container">
@@ -657,150 +777,7 @@
     </div>
 </section>
 
-<section id="features" class="features-section">
-    <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="fw-bold mb-3" style="background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Why Choose Our System?</h2>
-            <p class="text-muted fs-5">Advanced features designed for modern educational institutions</p>
-        </div>
 
-        <div class="row g-4">
-            <div class="col-lg-4 col-md-6">
-                <div class="feature-card animate-fade-in">
-                    <div class="feature-icon">
-                        <i class="bi bi-lightning-charge"></i>
-                    </div>
-                    <h3 class="feature-title">Lightning Fast</h3>
-                    <p class="feature-description">
-                        Process admissions in minutes with our streamlined workflow and automated document generation.
-                    </p>
-                </div>
-            </div>
-
-            <div class="col-lg-4 col-md-6">
-                <div class="feature-card animate-fade-in">
-                    <div class="feature-icon">
-                        <i class="bi bi-shield-check"></i>
-                    </div>
-                    <h3 class="feature-title">Secure & Reliable</h3>
-                    <p class="feature-description">
-                        Bank-grade security with encrypted data storage and comprehensive audit trails.
-                    </p>
-                </div>
-            </div>
-
-            <div class="col-lg-4 col-md-6">
-                <div class="feature-card animate-fade-in">
-                    <div class="feature-icon">
-                        <i class="bi bi-graph-up-arrow"></i>
-                    </div>
-                    <h3 class="feature-title">Smart Analytics</h3>
-                    <p class="feature-description">
-                        Gain insights with detailed reports and analytics to improve institutional performance.
-                    </p>
-                </div>
-            </div>
-
-            <div class="col-lg-4 col-md-6">
-                <div class="feature-card animate-fade-in">
-                    <div class="feature-icon">
-                        <i class="bi bi-phone"></i>
-                    </div>
-                    <h3 class="feature-title">Mobile Ready</h3>
-                    <p class="feature-description">
-                        Access the system anywhere with our responsive design optimized for all devices.
-                    </p>
-                </div>
-            </div>
-
-            <div class="col-lg-4 col-md-6">
-                <div class="feature-card animate-fade-in">
-                    <div class="feature-icon">
-                        <i class="bi bi-people"></i>
-                    </div>
-                    <h3 class="feature-title">User Friendly</h3>
-                    <p class="feature-description">
-                        Intuitive interface designed for administrators, faculty, and students alike.
-                    </p>
-                </div>
-            </div>
-
-            <div class="col-lg-4 col-md-6">
-                <div class="feature-card animate-fade-in">
-                    <div class="feature-icon">
-                        <i class="bi bi-cloud"></i>
-                    </div>
-                    <h3 class="feature-title">Cloud Based</h3>
-                    <p class="feature-description">
-                        Scalable cloud infrastructure ensuring 99.9% uptime and automatic backups.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section id="modules" class="modules-section">
-    <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="fw-bold mb-3">Comprehensive Module Suite</h2>
-            <p class="text-muted fs-5">Everything you need to manage your institution efficiently</p>
-        </div>
-
-        <div class="modules-container">
-            <div class="row g-4">
-                <div class="col-6 col-md-4 col-lg-3">
-                    <a href="?url=login" class="module-card-3d">
-                        <i class="bi bi-person-badge"></i>
-                        <span>User Management</span>
-                    </a>
-                </div>
-                <div class="col-6 col-md-4 col-lg-3">
-                    <a href="?url=admission" class="module-card-3d">
-                        <i class="bi bi-file-earmark-plus"></i>
-                        <span>Online Admissions</span>
-                    </a>
-                </div>
-                <div class="col-6 col-md-4 col-lg-3">
-                    <a href="?url=login" class="module-card-3d">
-                        <i class="bi bi-person-lines-fill"></i>
-                        <span>Student Profiles</span>
-                    </a>
-                </div>
-                <div class="col-6 col-md-4 col-lg-3">
-                    <a href="?url=login" class="module-card-3d">
-                        <i class="bi bi-person-workspace"></i>
-                        <span>Faculty Portal</span>
-                    </a>
-                </div>
-                <div class="col-6 col-md-4 col-lg-3">
-                    <a href="?url=login" class="module-card-3d">
-                        <i class="bi bi-calendar-event"></i>
-                        <span>Attendance System</span>
-                    </a>
-                </div>
-                <div class="col-6 col-md-4 col-lg-3">
-                    <a href="?url=login" class="module-card-3d">
-                        <i class="bi bi-clipboard-data"></i>
-                        <span>Grade Management</span>
-                    </a>
-                </div>
-                <div class="col-6 col-md-4 col-lg-3">
-                    <a href="?url=login" class="module-card-3d">
-                        <i class="bi bi-bar-chart-line"></i>
-                        <span>Reports & Analytics</span>
-                    </a>
-                </div>
-                <div class="col-6 col-md-4 col-lg-3">
-                    <a href="?url=login" class="module-card-3d">
-                        <i class="bi bi-envelope"></i>
-                        <span>Communication</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
 
 <section class="stats-section">
     <div class="container">
@@ -837,48 +814,77 @@
     <div class="container">
         <div class="team-card">
             <div class="team-header">
-                <h2 class="team-title">Meet Our Development Team</h2>
-                <p class="team-subtitle mb-0">
-                    Expert developers under the guidance of Athar Shaikh (DharwadHubliTutors)
-                </p>
+                <h2 class="team-title">Developer Team</h2>
+                <p class="team-subtitle mb-0">Built under academic guidance and close team collaboration.</p>
+            </div>
+
+            <div class="text-center mb-4">
+                <div class="lead-badge">
+                    <img id="leadAvatar" src="/uploads/avatar/athar.jpg" alt="Athar Shaikh" onerror="this.style.display='none';document.getElementById('leadFallback').style.display='inline-flex'">
+                    <div id="leadFallback" class="lead-avatar-fallback" style="display:none">Athar</div>
+                    <div>
+                        <div class="lead-name">Athar Shaikh</div>
+                        <div class="lead-role">Founder, DharwadHubliTutors — Academic Guide</div>
+                    </div>
+                </div>
             </div>
 
             <div class="developer-grid">
-                <div class="row row-cols-1 row-cols-md-2 g-3">
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-3">
                     <div class="col">
                         <div class="developer-item">
+                            <div class="developer-avatar">MS</div>
                             <div class="developer-name">Mohammad Saad Mirjanavar</div>
-                            <div class="developer-role">User Management Specialist</div>
+                            <div class="developer-role">User Management</div>
                         </div>
                     </div>
                     <div class="col">
                         <div class="developer-item">
+                            <div class="developer-avatar">MY</div>
                             <div class="developer-name">Mohammed Shakir Ali Yadwad</div>
-                            <div class="developer-role">Admission Module Expert</div>
+                            <div class="developer-role">Admission Module</div>
                         </div>
                     </div>
                     <div class="col">
                         <div class="developer-item">
+                            <div class="developer-avatar">JB</div>
                             <div class="developer-name">Jabeen Bepari</div>
-                            <div class="developer-role">Student Module Developer</div>
+                            <div class="developer-role">Student Module</div>
                         </div>
                     </div>
                     <div class="col">
                         <div class="developer-item">
+                            <div class="developer-avatar">SY</div>
                             <div class="developer-name">Shaziya Yaragatti</div>
-                            <div class="developer-role">Student Portal Specialist</div>
+                            <div class="developer-role">Student Module</div>
                         </div>
                     </div>
                     <div class="col">
                         <div class="developer-item">
+                            <div class="developer-avatar">TM</div>
                             <div class="developer-name">Taslim Meeranavar</div>
-                            <div class="developer-role">Faculty Module Engineer</div>
+                            <div class="developer-role">Faculty Module</div>
                         </div>
                     </div>
                     <div class="col">
                         <div class="developer-item">
+                            <div class="developer-avatar">BA</div>
                             <div class="developer-name">Bibi Asiya Karnool</div>
-                            <div class="developer-role">Faculty Portal Developer</div>
+                            <div class="developer-role">Faculty Portal</div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="developer-item">
+                            <div class="developer-avatar">RM</div>
+                            <div class="developer-name">Rubina Makandar</div>
+                            <div class="developer-role">Faculty Portal</div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="developer-item">
+                            <div class="developer-avatar">FB</div>
+                            <div class="developer-name">Farhat Bahadur</div>
+                            <div class="developer-role">Cyber Security</div>
                         </div>
                     </div>
                 </div>
@@ -887,22 +893,7 @@
     </div>
 </section>
 
-<section class="warning-section">
-    <div class="container">
-        <div class="warning-card p-4">
-            <div class="d-flex align-items-start">
-                <i class="bi bi-exclamation-triangle-fill text-danger fs-3 me-3 mt-1"></i>
-                <div>
-                    <h6 class="text-danger fw-bold mb-2">Security & Compliance Notice</h6>
-                    <p class="mb-0 text-secondary">
-                        Unauthorized access to the Nehru BBA and BCA College database is strictly prohibited under academic cyber-laws.
-                        All activities are monitored and logged for security purposes. Data privacy and protection are our top priorities.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+<!-- Warning section removed per redesign request -->
 
 <footer class="footer">
     <div class="container">

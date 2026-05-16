@@ -279,6 +279,66 @@ if (!$admission) {
             letter-spacing: 0.5px;
         }
 
+        .document-file-name {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+            max-width: 220px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .document-upload-date {
+            font-size: 11px;
+            color: #6b7280;
+            margin-top: 4px;
+        }
+
+        .document-meta-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .document-view-button {
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 10px 16px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, var(--brand-light) 0%, #0ea5e9 100%);
+            color: white;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            white-space: nowrap;
+        }
+
+        .document-view-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 24px rgba(14, 165, 233, 0.25);
+        }
+
+        .document-clickable {
+            cursor: pointer;
+        }
+
+        .document-preview .pdf-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 72px;
+            height: 72px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.15) 0%, rgba(14, 165, 233, 0.05) 100%);
+            color: #0369a1;
+            font-size: 32px;
+        }
+
         .document-status {
             display: flex;
             align-items: center;
@@ -410,31 +470,69 @@ if (!$admission) {
         .btn-approve {
             background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
             color: white;
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-approve::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: left 0.5s ease;
+            z-index: 0;
+        }
+
+        .btn-approve:hover::before {
+            left: 100%;
         }
 
         .btn-approve:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
         }
 
         .btn-approve:active {
-            transform: translateY(0);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
         }
 
         .btn-reject {
             background: linear-gradient(135deg, var(--error) 0%, #dc2626 100%);
             color: white;
-            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-reject::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: left 0.5s ease;
+            z-index: 0;
+        }
+
+        .btn-reject:hover::before {
+            left: 100%;
         }
 
         .btn-reject:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(239, 68, 68, 0.4);
         }
 
         .btn-reject:active {
-            transform: translateY(0);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
         }
 
         .btn-action:disabled {
@@ -443,46 +541,176 @@ if (!$admission) {
             transform: none;
         }
 
-        /* Modal for Document View */
+        .btn-action.loading {
+            pointer-events: none;
+        }
+
+        .btn-action i {
+            transition: transform 0.3s ease;
+        }
+
+        .btn-action.loading i {
+            animation: spin 1s linear infinite;
+        }
+
+        /* Modal for Document View - Full Screen */
         .modal-backdrop.show {
-            background-color: rgba(6, 17, 42, 0.5);
+            background-color: rgba(6, 17, 42, 0.6);
+            animation: fadeInBackdrop 0.3s ease-out;
+        }
+
+        @keyframes fadeInBackdrop {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         .modal-content {
             border: none;
-            border-radius: 16px;
+            border-radius: 20px;
             box-shadow: var(--shadow-lg);
+            animation: slideUpModal 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            overflow: hidden;
+        }
+
+        @keyframes slideUpModal {
+            from {
+                opacity: 0;
+                transform: translateY(60px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .modal-header {
-            border-bottom: 1px solid #e5e7eb;
+            border-bottom: 2px solid #e5e7eb;
             background: linear-gradient(135deg, var(--brand-mid) 0%, var(--brand-light) 100%);
             color: white;
+            padding: 24px 30px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .modal-header .modal-title {
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .modal-header .btn-close {
             filter: brightness(0) invert(1);
+            opacity: 0.8;
+            transition: all 0.2s ease;
+        }
+
+        .modal-header .btn-close:hover {
+            opacity: 1;
         }
 
         .modal-body {
-            padding: 20px;
-        }
-
-        .document-viewer {
-            width: 100%;
-            height: 600px;
+            padding: 30px;
             background: #f9fafb;
-            border-radius: 12px;
+            min-height: 80vh;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
         }
 
-        .document-viewer img,
-        .document-viewer iframe {
+        .document-viewer {
+            width: 100%;
+            max-width: 96vw;
+            max-height: 82vh;
+            min-height: 60vh;
+            background: white;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 40px rgba(6, 17, 42, 0.2);
+            overflow: hidden;
+            animation: zoomIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes zoomIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .document-viewer img {
             max-width: 100%;
             max-height: 100%;
-            border-radius: 8px;
+            object-fit: contain;
+            display: block;
+            animation: fadeIn 0.5s ease-out 0.2s both;
+        }
+
+        .document-viewer iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            animation: fadeIn 0.5s ease-out 0.2s both;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-lg {
+            max-width: 95vw;
+        }
+
+        /* Loading Spinner for Document Viewer */
+        .document-loading {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .document-loading-spinner {
+            border: 4px solid rgba(34, 195, 227, 0.1);
+            border-top: 4px solid var(--brand-light);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        .modal-footer {
+            padding: 20px 30px;
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .modal-footer .btn {
+            border-radius: 10px;
+            font-weight: 600;
+            padding: 10px 20px;
+            transition: all 0.3s ease;
+        }
+
+        .modal-footer .btn-secondary {
+            background: #e5e7eb;
+            color: var(--text-primary);
+        }
+
+        .modal-footer .btn-secondary:hover {
+            background: #d1d5db;
         }
 
         /* Loading State */
@@ -526,30 +754,92 @@ if (!$admission) {
         /* Toast Notification */
         .toast-container {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
+            bottom: 30px;
+            right: 30px;
             z-index: 1050;
+            max-width: 400px;
         }
 
         .toast {
             background: white;
-            border-radius: 12px;
-            box-shadow: var(--shadow);
-            padding: 16px 20px;
-            margin-bottom: 10px;
-            animation: slideUp 0.3s ease-out;
+            border-radius: 14px;
+            box-shadow: var(--shadow-lg);
+            padding: 18px 24px;
+            margin-bottom: 12px;
+            animation: slideInUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             display: flex;
             align-items: center;
-            gap: 12px;
-            min-width: 320px;
+            gap: 14px;
+            min-width: 300px;
+            border-left: 5px solid var(--brand-light);
+            backdrop-filter: blur(10px);
+        }
+
+        .toast i {
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .toast span {
+            flex: 1;
+            font-weight: 500;
         }
 
         .toast.success {
-            border-left: 4px solid var(--success);
+            border-left-color: var(--success);
+            background: linear-gradient(135deg, rgba(209, 250, 229, 0.5) 0%, rgba(167, 243, 208, 0.3) 100%);
+        }
+
+        .toast.success i {
+            color: var(--success);
+        }
+
+        .toast.success span {
+            color: #065f46;
         }
 
         .toast.error {
-            border-left: 4px solid var(--error);
+            border-left-color: var(--error);
+            background: linear-gradient(135deg, rgba(254, 226, 226, 0.5) 0%, rgba(254, 202, 202, 0.3) 100%);
+        }
+
+        .toast.error i {
+            color: var(--error);
+        }
+
+        .toast.error span {
+            color: #991b1b;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideOutUp {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateY(-40px);
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+            }
         }
 
         /* Responsive */
@@ -671,31 +961,79 @@ if (!$admission) {
                     </p>
                     <div class="document-grid">
                         <?php
+                        $publicBase = rtrim(str_replace('index.php?url=', '', BASE_URL), '/');
+
+                        function resolveDocumentUrl($path) {
+                            global $publicBase;
+                            $normalized = trim($path);
+                            $normalized = preg_replace('#^/+|/+$#', '', $normalized);
+                            $normalized = preg_replace('#^college/public/#', '', $normalized);
+                            $normalized = preg_replace('#^public/#', '', $normalized);
+                            return $publicBase . '/' . ltrim($normalized, '/');
+                        }
+
+                        function resolveDocumentFilePath($path) {
+                            $normalized = trim($path);
+                            $normalized = preg_replace('#^/+|/+$#', '', $normalized);
+                            $normalized = preg_replace('#^college/public/#', '', $normalized);
+                            $normalized = preg_replace('#^public/#', '', $normalized);
+                            return __DIR__ . '/../../' . $normalized;
+                        }
+
                         $documents = [
                             ['label' => 'Photo', 'field' => 'photo', 'icon' => 'image'],
-                            ['label' => 'SSLC Marks', 'field' => 'sslc_marks_card', 'icon' => 'file-pdf'],
-                            ['label' => 'PUC/Diploma Marks', 'field' => 'puc_marks_card', 'icon' => 'file-pdf'],
+                            ['label' => 'SSLC Marks', 'field' => 'sslc_marks_card', 'icon' => 'file-earmark-pdf'],
+                            ['label' => 'PUC/Diploma Marks', 'field' => 'puc_marks_card', 'icon' => 'file-earmark-pdf'],
                             ['label' => 'Aadhar Card', 'field' => 'aadhar_card', 'icon' => 'id-card'],
                             ['label' => 'Candidate Signature', 'field' => 'candidate_signature', 'icon' => 'pen'],
                             ['label' => 'Parent Signature', 'field' => 'parent_signature', 'icon' => 'pen'],
                         ];
 
                         foreach ($documents as $doc):
-                            $hasDoc = !empty($admission[$doc['field']]);
-                            $docPath = BASE_URL . $admission[$doc['field']];
+                            $docValue = trim($admission[$doc['field']] ?? '');
+                            $hasDoc = $docValue !== '';
+                            $docPath = $hasDoc ? resolveDocumentUrl($docValue) : '';
+                            $fileName = $hasDoc ? basename($docValue) : '';
+                            $isPdf = $hasDoc && preg_match('/\.pdf$/i', $docValue);
+                            $isImage = $hasDoc && preg_match('/\.(jpe?g|png|gif|webp)$/i', $docValue);
+                            $uploadDate = '';
+                            if ($hasDoc) {
+                                $serverFile = resolveDocumentFilePath($docValue);
+                                if (file_exists($serverFile)) {
+                                    $uploadDate = date('d M Y, H:i', filemtime($serverFile));
+                                } elseif (!empty($admission['updated_at'])) {
+                                    $uploadDate = date('d M Y, H:i', strtotime($admission['updated_at']));
+                                }
+                            }
                         ?>
                             <div class="document-card" <?= $hasDoc ? 'onclick="viewDocument(\'' . htmlspecialchars($docPath) . '\', \'' . htmlspecialchars($doc['label']) . '\')" style="cursor: pointer;"' : '' ?>>
                                 <div class="document-preview">
-                                    <?php if ($hasDoc && (strpos($admission[$doc['field']], '.pdf') !== false)): ?>
-                                        <i class="bi bi-file-pdf"></i>
-                                    <?php elseif ($hasDoc && (strpos($admission[$doc['field']], '.jpg') !== false || strpos($admission[$doc['field']], '.png') !== false)): ?>
+                                    <?php if ($hasDoc && $isPdf): ?>
+                                        <div class="pdf-badge"><i class="bi bi-file-earmark-pdf-fill"></i></div>
+                                    <?php elseif ($hasDoc && $isImage): ?>
                                         <img src="<?= htmlspecialchars($docPath) ?>" alt="<?= htmlspecialchars($doc['label']) ?>">
                                     <?php else: ?>
                                         <i class="bi bi-<?= $doc['icon'] ?>"></i>
                                     <?php endif; ?>
                                 </div>
                                 <div class="document-info">
-                                    <div class="document-name"><?= htmlspecialchars($doc['label']) ?></div>
+                                    <div class="document-meta-row">
+                                        <div>
+                                            <div class="document-name"><?= htmlspecialchars($doc['label']) ?></div>
+                                            <?php if ($hasDoc): ?>
+                                                <div class="document-file-name"><?= htmlspecialchars($fileName) ?></div>
+                                                <?php if ($uploadDate): ?>
+                                                    <div class="document-upload-date">Uploaded: <?= htmlspecialchars($uploadDate) ?></div>
+                                                <?php endif; ?>
+                                            <?php endif; ?>
+                                        </div>
+                                        <?php if ($hasDoc): ?>
+                                            <div style="display:flex; gap: 0.5rem; align-items: center;">
+                                                <button type="button" class="document-view-button" onclick="event.stopPropagation(); viewDocument('<?= htmlspecialchars($docPath) ?>', '<?= htmlspecialchars($doc['label']) ?>')">View</button>
+                                                <a href="<?= htmlspecialchars($docPath) ?>" download="<?= htmlspecialchars($fileName) ?>" class="document-view-button" onclick="event.stopPropagation();" style="background: #2563eb;">Download</a>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
                                     <div class="document-status">
                                         <?php if ($hasDoc): ?>
                                             <span class="status-icon success"><i class="bi bi-check"></i></span>
@@ -745,6 +1083,21 @@ if (!$admission) {
                         <textarea class="notes-textarea" id="approvalNotes" placeholder="Add any notes or observations..."></textarea>
                     </div>
 
+                    <div class="notes-area">
+                        <label class="notes-label">Fee Payment Window</label>
+                        <div class="payment-schedule-row">
+                            <?php
+                                $paymentSchedule = isset($admission['admin_payment_schedule']) ? $admission['admin_payment_schedule'] : '';
+                                $scheduleParts = $paymentSchedule !== '' ? explode(' to ', $paymentSchedule) : [];
+                                $paymentStartValue = htmlspecialchars($scheduleParts[0] ?? '12');
+                                $paymentEndValue = htmlspecialchars($scheduleParts[1] ?? '16');
+                            ?>
+                            <input type="text" id="paymentStart" class="notes-textarea" placeholder="From (e.g. 12)" value="<?= $paymentStartValue ?>">
+                            <span style="display: inline-flex; align-items: center; margin: 0 8px; color: var(--text-secondary);">to</span>
+                            <input type="text" id="paymentEnd" class="notes-textarea" placeholder="To (e.g. 16)" value="<?= $paymentEndValue ?>">
+                        </div>
+                    </div>
+
                     <!-- Action Buttons -->
                     <div class="action-buttons">
                         <button type="button" class="btn-action btn-approve" id="approveBtn" onclick="handleApproval()">
@@ -759,16 +1112,32 @@ if (!$admission) {
         </div>
     </div>
 
-    <!-- Document Viewer Modal -->
-    <div class="modal fade" id="documentModal" tabindex="-1">
+    <!-- Document Viewer Modal - Enhanced Full Page -->
+    <div class="modal fade" id="documentModal" tabindex="-1" data-bs-backdrop="static">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title"><i class="bi bi-file-earmark"></i> <span id="documentTitle"></span></h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <h5 class="modal-title">
+                        <i class="bi bi-file-earmark-pdf"></i>
+                        <span id="documentTitle"></span>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" title="Close document viewer"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="document-viewer" id="documentViewer"></div>
+                    <div class="document-viewer" id="documentViewer">
+                        <div class="document-loading">
+                            <div class="document-loading-spinner"></div>
+                            <p style="color: var(--text-secondary); font-weight: 500;">Loading document...</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle"></i> Close
+                    </button>
+                    <a id="downloadDocLink" href="#" class="btn btn-primary" download>
+                        <i class="bi bi-download"></i> Download
+                    </a>
                 </div>
             </div>
         </div>
@@ -788,42 +1157,100 @@ if (!$admission) {
             document.getElementById('rejectBtn').disabled = true;
         }
 
-        // View Document
+        // View Document with Enhanced Modal
         function viewDocument(documentPath, documentName) {
+            console.log('Viewing document:', documentPath, documentName);
             const modal = new bootstrap.Modal(document.getElementById('documentModal'));
             const viewer = document.getElementById('documentViewer');
             const titleElement = document.getElementById('documentTitle');
+            const downloadLink = document.getElementById('downloadDocLink');
 
             titleElement.textContent = documentName;
+            downloadLink.href = documentPath;
+            const sanitizedFileName = documentName.replace(/\.[^/.]+$/, '');
+            downloadLink.download = sanitizedFileName + (documentPath.toLowerCase().includes('.pdf') ? '.pdf' : '');
 
-            if (documentPath.includes('.pdf')) {
-                viewer.innerHTML = `<iframe src="${documentPath}" style="width: 100%; height: 100%; border: none;"></iframe>`;
-            } else {
-                viewer.innerHTML = `<img src="${documentPath}" alt="${documentName}">`;
-            }
+            // Show loading spinner
+            viewer.innerHTML = `
+                <div class="document-loading">
+                    <div class="document-loading-spinner"></div>
+                    <p style="color: var(--text-secondary); font-weight: 500;">Loading document...</p>
+                </div>
+            `;
+
+            // Simulate loading delay for better UX
+            setTimeout(() => {
+                if (!documentPath) {
+                    console.error('Document path is empty for', documentName);
+                    viewer.innerHTML = `<div style="color:#ef4444; padding:20px;">Unable to load document. File path is missing.</div>`;
+                    return;
+                }
+
+                if (documentPath.toLowerCase().includes('.pdf')) {
+                    viewer.innerHTML = `
+                        <iframe 
+                            src="${documentPath}#toolbar=0&navpanes=0&scrollbar=0" 
+                            style="width: 100%; height: 100%; border: none; border-radius: 12px;"
+                            title="Document Viewer">
+                        </iframe>
+                    `;
+                } else {
+                    viewer.innerHTML = `
+                        <img 
+                            src="${documentPath}" 
+                            alt="${documentName}"
+                            style="max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"
+                        >
+                    `;
+                }
+
+                const mediaElement = viewer.querySelector('img, iframe');
+                if (mediaElement) {
+                    mediaElement.addEventListener('error', () => {
+                        console.error('Document failed to load:', documentPath);
+                        viewer.innerHTML = `<div style="color:#ef4444; padding:20px;">Unable to load the document. It may be missing or inaccessible.</div>`;
+                    });
+                }
+            }, 400);
 
             modal.show();
         }
 
-        // Handle Approval
+        // Handle Approval with Enhanced Feedback
         function handleApproval() {
             if (!validateChecklist()) {
-                showToast('Please verify all items in the checklist', 'error');
+                showAdminToast('Please verify all items in the checklist', 'error');
+                document.getElementById('check-eligibility').focus();
                 return;
             }
 
             const notes = document.getElementById('approvalNotes').value;
-            submitDecision('approved', notes);
+            const approveBtn = document.getElementById('approveBtn');
+            
+            approveBtn.classList.add('loading');
+            approveBtn.innerHTML = '<span class="spinner"></span> Processing Approval...';
+            
+            setTimeout(() => {
+                submitDecision('approved', notes);
+            }, 300);
         }
 
-        // Handle Rejection
+        // Handle Rejection with Enhanced Feedback
         function handleRejection() {
             const notes = document.getElementById('approvalNotes').value;
             if (!notes.trim()) {
-                showToast('Please provide rejection notes', 'error');
+                showAdminToast('Please provide rejection reason/notes', 'error');
+                document.getElementById('approvalNotes').focus();
                 return;
             }
-            submitDecision('rejected', notes);
+            
+            const rejectBtn = document.getElementById('rejectBtn');
+            rejectBtn.classList.add('loading');
+            rejectBtn.innerHTML = '<span class="spinner"></span> Processing Rejection...';
+            
+            setTimeout(() => {
+                submitDecision('rejected', notes);
+            }, 300);
         }
 
         // Validate Checklist
@@ -837,21 +1264,12 @@ if (!$admission) {
             return checks.every(c => c === true);
         }
 
-        // Submit Decision
+        // Submit Decision with Enhanced Error Handling
         function submitDecision(status, notes) {
             const approveBtn = document.getElementById('approveBtn');
             const rejectBtn = document.getElementById('rejectBtn');
             const originalApproveText = approveBtn.innerHTML;
             const originalRejectText = rejectBtn.innerHTML;
-
-            // Show loading state
-            if (status === 'approved') {
-                approveBtn.disabled = true;
-                approveBtn.innerHTML = '<span class="spinner"></span> Processing...';
-            } else {
-                rejectBtn.disabled = true;
-                rejectBtn.innerHTML = '<span class="spinner"></span> Processing...';
-            }
 
             // Send to server
             fetch('<?= BASE_URL ?>admin-admission-decision', {
@@ -862,49 +1280,79 @@ if (!$admission) {
                 body: JSON.stringify({
                     admission_id: admissionId,
                     decision: status,
-                    notes: notes
+
+                    notes: notes,
+                    payment_start: document.getElementById('paymentStart')?.value || '',
+                    payment_end: document.getElementById('paymentEnd')?.value || ''
                 })
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
             .then(data => {
                 if (data.success) {
-                    showToast(data.message, 'success');
+                    showAdminToast(data.message, 'success');
+                    // Add success animation
+                    const panel = document.querySelector('.approval-panel');
+                    panel.style.animation = 'fadeOut 0.5s ease-out 1s forwards';
+                    
                     setTimeout(() => {
-                        window.location.href = '<?= BASE_URL ?>admin-admissions';
+                        window.location.href = '<?= BASE_URL ?>admin-admissions&msg=' + (status === 'approved' ? 'approved_success' : 'rejected_success');
                     }, 1500);
                 } else {
-                    showToast(data.message || 'An error occurred', 'error');
-                    approveBtn.disabled = false;
-                    rejectBtn.disabled = false;
-                    approveBtn.innerHTML = originalApproveText;
-                    rejectBtn.innerHTML = originalRejectText;
+                    showAdminToast(data.message || 'An error occurred', 'error');
+                    restoreButtons();
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                showToast('An error occurred. Please try again.', 'error');
+                showAdminToast('Network error. Please try again.', 'error');
+                restoreButtons();
+            });
+
+            function restoreButtons() {
+                approveBtn.classList.remove('loading');
+                rejectBtn.classList.remove('loading');
                 approveBtn.disabled = false;
                 rejectBtn.disabled = false;
                 approveBtn.innerHTML = originalApproveText;
                 rejectBtn.innerHTML = originalRejectText;
-            });
+            }
         }
 
-        // Show Toast Notification
-        function showToast(message, type = 'success') {
+        // Show Toast Notification with Enhanced Styling
+        function showAdminToast(message, type = 'success') {
             const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
+            
+            const icon = type === 'success' ? 'check-circle-fill' : 
+                        type === 'warning' ? 'exclamation-triangle-fill' : 'exclamation-circle-fill';
+            
             toast.innerHTML = `
-                <i class="bi bi-${type === 'success' ? 'check-circle-fill' : 'exclamation-circle-fill'}"></i>
+                <i class="bi bi-${icon}"></i>
                 <span>${message}</span>
+                <button onclick="this.parentElement.remove()" style="background: none; border: none; color: inherit; cursor: pointer; font-size: 16px; padding: 0; margin-left: auto;">
+                    <i class="bi bi-x"></i>
+                </button>
             `;
+            
             container.appendChild(toast);
 
+            // Auto-remove after 4 seconds
             setTimeout(() => {
-                toast.remove();
+                if (toast.parentElement) {
+                    toast.style.animation = 'slideOutUp 0.4s ease-out forwards';
+                    setTimeout(() => toast.remove(), 400);
+                }
             }, 4000);
         }
+
+        // Support both old and new toast function names
+        const showToast = showAdminToast;
     </script>
 </body>
 </html>

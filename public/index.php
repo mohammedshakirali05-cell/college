@@ -171,7 +171,13 @@ switch ($url) {
 
         $admin = new AdminController($db);
         $users = $admin->getUsersByRole('Student');
-        include __DIR__ . '/../app/views/admin/students.php';
+        $studentsView = __DIR__ . '/../app/views/admin/students.php';
+        if (file_exists($studentsView)) {
+            include $studentsView;
+        } else {
+            // view was removed - redirect to reports to avoid include warning
+            redirectTo('reports');
+        }
         break;
 
     case 'faculty':
@@ -191,6 +197,17 @@ switch ($url) {
         $reportController = new ReportController($db);
         $reportController->overallReport();
         break;
+
+    case 'reports-installment':
+        if (!isset($_SESSION['user_id']) || strtolower($_SESSION['role']) !== 'admin') {
+            redirectTo('login');
+        }
+
+        $reportController = new ReportController($db);
+        $reportController->submitReportsInstallment();
+        break;
+
+    /* Student reports routes removed per request */
 
     case 'admin-admissions':
         if (!isset($_SESSION['user_id']) || strtolower($_SESSION['role']) !== 'admin') {

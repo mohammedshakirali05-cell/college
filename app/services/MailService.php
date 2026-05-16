@@ -147,6 +147,51 @@ class MailService
         }
     }
 
+    public function sendEmail($toEmail, $subject, $body, $format = 'html')
+    {
+        if (empty($toEmail) || !filter_var($toEmail, FILTER_VALIDATE_EMAIL)) {
+            error_log('MailService: Invalid email address for sendEmail - ' . $toEmail);
+            return ['success' => false, 'error' => 'Invalid email address'];
+        }
+
+        $mail = new PHPMailer(true);
+
+        try {
+            $mail->isSMTP();
+            $mail->SMTPDebug = defined('MAIL_DEBUG') && MAIL_DEBUG ? SMTP::DEBUG_SERVER : SMTP::DEBUG_OFF;
+            $mail->Debugoutput = function($str, $level) {
+                error_log('PHPMailer Debug [' . $level . ']: ' . $str);
+            };
+            $mail->Host       = MAIL_HOST;
+            $mail->SMTPAuth   = true;
+            $mail->Username   = MAIL_USERNAME;
+            $mail->Password   = trim(MAIL_PASSWORD);
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port       = MAIL_PORT;
+            $mail->Timeout    = 15;
+            $mail->SMTPKeepAlive = false;
+            $mail->SMTPAutoTLS = true;
+
+            $mail->setFrom(MAIL_FROM_EMAIL, MAIL_FROM_NAME);
+            $mail->addAddress($toEmail);
+
+            $mail->isHTML(strtolower($format) === 'html');
+            $mail->Subject = $subject;
+            $mail->Body = $body;
+            $mail->AltBody = strip_tags($body);
+
+            if (!$mail->send()) {
+                error_log('MailService sendEmail failed: ' . $mail->ErrorInfo);
+                return ['success' => false, 'error' => $mail->ErrorInfo];
+            }
+
+            return ['success' => true, 'error' => null];
+        } catch (Exception $e) {
+            error_log('MailService sendEmail exception: ' . $e->getMessage());
+            return ['success' => false, 'error' => $e->getMessage()];
+        }
+    }
+
     public function sendCashApprovalEmail($toEmail, $fullName, $admissionNumber, $successUrl)
     {
         $mail = new PHPMailer(true);

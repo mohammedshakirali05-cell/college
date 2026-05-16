@@ -47,6 +47,9 @@ class FeesModel
             installment_no INT NOT NULL,
             amount DECIMAL(10,2) NOT NULL DEFAULT 0.00,
             paid_date DATE NOT NULL,
+            payment_mode VARCHAR(50) NULL,
+            receipt_number VARCHAR(100) NULL,
+            notes TEXT NULL,
             created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY (id),
             INDEX idx_fee_id (fee_id),
@@ -87,6 +90,15 @@ class FeesModel
         $query = "SELECT * FROM fees_master WHERE admission_id = :admission_id LIMIT 1";
         $stmt = $this->conn->prepare($query);
         $stmt->bindValue(':admission_id', $admissionId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function getFeeById($feeId)
+    {
+        $query = "SELECT * FROM fees_master WHERE id = :fee_id LIMIT 1";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindValue(':fee_id', $feeId, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
@@ -134,18 +146,21 @@ class FeesModel
         return $this->conn->lastInsertId();
     }
 
-    public function addInstallment($feeId, $amount, $paidDate)
+    public function addInstallment($feeId, $amount, $paidDate, $paymentMode = null, $receiptNumber = null, $notes = null)
     {
         $installmentNo = $this->getNextInstallmentNo($feeId);
 
-        $query = "INSERT INTO fee_installments (fee_id, installment_no, amount, paid_date)
-                  VALUES (:fee_id, :installment_no, :amount, :paid_date)";
+        $query = "INSERT INTO fee_installments (fee_id, installment_no, amount, paid_date, payment_mode, receipt_number, notes)
+                  VALUES (:fee_id, :installment_no, :amount, :paid_date, :payment_mode, :receipt_number, :notes)";
         $stmt = $this->conn->prepare($query);
         $stmt->execute([
             ':fee_id' => $feeId,
             ':installment_no' => $installmentNo,
             ':amount' => $amount,
             ':paid_date' => $paidDate,
+            ':payment_mode' => $paymentMode,
+            ':receipt_number' => $receiptNumber,
+            ':notes' => $notes,
         ]);
 
         $this->recalculateFeeTotals($feeId);

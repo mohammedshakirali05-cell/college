@@ -409,6 +409,7 @@ class AdmissionModel
         $approvalColumns = [
             'admin_approval_status' => "ENUM('pending', 'approved', 'rejected') NOT NULL DEFAULT 'pending'",
             'admin_approval_notes' => 'TEXT NULL',
+            'admin_payment_schedule' => 'VARCHAR(100) NULL',
             'admin_approved_by' => 'INT NULL',
             'admin_approved_at' => 'TIMESTAMP NULL'
         ];
@@ -427,24 +428,31 @@ class AdmissionModel
         }
     }
 
-    public function updateAdmissionApprovalStatus($id, $status, $notes = '', $approvedBy = null)
+    public function updateAdmissionApprovalStatus($id, $status, $notes = '', $approvedBy = null, $paymentSchedule = null)
     {
         try {
-            $query = "UPDATE admissions SET 
-                      admin_approval_status = :status,
-                      admin_approval_notes = :notes,
-                      admin_approved_by = :approved_by,
-                      admin_approved_at = NOW(),
-                      updated_at = NOW()
-                      WHERE id = :id";
+            $fields = [
+                'admin_approval_status = :status',
+                'admin_approval_notes = :notes',
+                'admin_approved_by = :approved_by',
+                'admin_approved_at = NOW()'
+            ];
 
-            $stmt = $this->conn->prepare($query);
-            $result = $stmt->execute([
+            $params = [
                 ':status' => $status,
                 ':notes' => $notes,
                 ':approved_by' => $approvedBy,
                 ':id' => $id
-            ]);
+            ];
+
+            if ($paymentSchedule !== null) {
+                $fields[] = 'admin_payment_schedule = :admin_payment_schedule';
+                $params[':admin_payment_schedule'] = $paymentSchedule;
+            }
+
+            $query = "UPDATE admissions SET " . implode(', ', $fields) . ", updated_at = NOW() WHERE id = :id";
+            $stmt = $this->conn->prepare($query);
+            $result = $stmt->execute($params);
 
             return $result;
         } catch (Exception $e) {

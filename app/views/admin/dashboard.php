@@ -6,6 +6,7 @@ include __DIR__ . '/../layouts/sidebar.php';
 
 <!-- Dashboard Content Container -->
 <div class="main-content" style="animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);">
+    <div class="dashboard-shell">
     <!-- Alert Messages -->
     <?php if (isset($_GET['msg']) && $_GET['msg'] === 'updated'): ?>
         <div class="alert alert-success alert-dismissible fade show mb-4" role="alert" style="animation: slideDown 0.35s ease;">
@@ -23,11 +24,51 @@ include __DIR__ . '/../layouts/sidebar.php';
         </div>
     <?php endif; ?>
 
-    <!-- Dashboard Header -->
+    <!-- Redesigned Dashboard Hero/Header -->
     <div class="dashboard-header mb-5" style="animation: fadeInUp 0.7s cubic-bezier(0.4, 0, 0.2, 1) 0.1s both;">
-        <div class="header-content">
-            <h1 class="header-title">📊 Dashboard Overview</h1>
-            <p class="header-subtitle">Welcome back! Here's your comprehensive system overview and statistics.</p>
+        <div class="hero-date-pill" aria-hidden="false">
+            <div class="date-day"><?= date('l') ?></div>
+            <div class="date-full"><?= date('j F Y') ?></div>
+        </div>
+        <div class="dashboard-hero">
+            <div class="hero-panel">
+                <div class="hero-pill">Admin Dashboard</div>
+                <h1 class="hero-title">Welcome back, <?= htmlspecialchars($_SESSION['user_name'] ?? 'Administrator') ?>!</h1>
+                <p class="hero-copy">Manage users, students, faculty, reports and academic records from one secure dashboard with a single glance.</p>
+
+                <div class="hero-keycards">
+                    <div class="hero-keycard">
+                        <div class="hero-keycard-icon primary"><i class="bi bi-people-fill"></i></div>
+                        <div>
+                            <span>Total Users</span>
+                            <strong><?= htmlspecialchars($totalUsers) ?></strong>
+                        </div>
+                    </div>
+                    <div class="hero-keycard">
+                        <div class="hero-keycard-icon students"><i class="bi bi-mortarboard-fill"></i></div>
+                        <div>
+                            <span>Students</span>
+                            <strong><?= htmlspecialchars($totalStudents) ?></strong>
+                        </div>
+                    </div>
+                    <div class="hero-keycard">
+                        <div class="hero-keycard-icon faculty"><i class="bi bi-person-workspace"></i></div>
+                        <div>
+                            <span>Faculty</span>
+                            <strong><?= htmlspecialchars($totalFaculty) ?></strong>
+                        </div>
+                    </div>
+                    <div class="hero-keycard">
+                        <div class="hero-keycard-icon active"><i class="bi bi-check-circle-fill"></i></div>
+                        <div>
+                            <span>Active Users</span>
+                            <strong><?= htmlspecialchars($activeUsers) ?></strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right hero panel removed per request. Left area now expands full-width. -->
         </div>
     </div>
 

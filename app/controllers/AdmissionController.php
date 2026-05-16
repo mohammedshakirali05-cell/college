@@ -419,6 +419,8 @@ class AdmissionController
         $admissionId = (int)($input['admission_id'] ?? 0);
         $decision = trim($input['decision'] ?? '');
         $notes = trim($input['notes'] ?? '');
+        $paymentStart = trim($input['payment_start'] ?? '');
+        $paymentEnd = trim($input['payment_end'] ?? '');
 
         if ($admissionId <= 0 || !in_array($decision, ['approved', 'rejected'])) {
             http_response_code(400);
@@ -433,13 +435,19 @@ class AdmissionController
             exit();
         }
 
+        $paymentSchedule = null;
+        if ($paymentStart !== '' || $paymentEnd !== '') {
+            $paymentSchedule = trim($paymentStart) . ' to ' . trim($paymentEnd);
+        }
+
         // Update admission status
         $adminId = isset($_SESSION['admin_id']) ? (int)$_SESSION['admin_id'] : null;
         $updated = $this->admissionModel->updateAdmissionApprovalStatus(
             $admissionId,
             $decision,
             $notes,
-            $adminId
+            $adminId,
+            $paymentSchedule
         );
 
         if (!$updated) {
@@ -449,7 +457,7 @@ class AdmissionController
         }
 
         // Send email to student
-        $this->sendAdmissionDecisionEmail($admission, $decision, $notes);
+        $this->sendAdmissionDecisionEmail($admission, $decision, $notes, $paymentSchedule);
 
         http_response_code(200);
         echo json_encode([
@@ -461,7 +469,7 @@ class AdmissionController
         exit();
     }
 
-    private function sendAdmissionDecisionEmail($admission, $decision, $notes)
+    private function sendAdmissionDecisionEmail($admission, $decision, $notes, $paymentSchedule = null)
     {
         if (empty($admission['email'])) {
             return false;
@@ -471,7 +479,7 @@ class AdmissionController
         
         if ($decision === 'approved') {
             $subject = 'Admission Approved - Next Steps for Fee Payment';
-            $body = $this->getApprovalEmailTemplate($admission, $notes);
+            $body = $this->getApprovalEmailTemplate($admission, $notes, $paymentSchedule);
         } else {
             $subject = 'Admission Application - Action Required';
             $body = $this->getRejectionEmailTemplate($admission, $notes);
@@ -485,12 +493,23 @@ class AdmissionController
         );
     }
 
-    private function getApprovalEmailTemplate($admission, $notes)
+    private function getApprovalEmailTemplate($admission, $notes, $paymentSchedule = null)
     {
         $collegeName = 'Nehru BBA & BCA College';
         $studentName = htmlspecialchars($admission['full_name']);
-        $studentId = htmlspecialchars($admission['student_id']);
+        $studentId = htmlspecialchars($admission['student_id'] ?? 'N/A');
         $feeAmount = '6,000 to 10,000';
+        $portalUrl = BASE_URL . 'student-login';
+
+        $scheduleBlock = '';
+        if (!empty($paymentSchedule)) {
+            $scheduleBlock = "<div class=\"info-box\"><div class=\"info-label\">Payment Window</div><div class=\"info-value\">{$paymentSchedule}</div></div>";
+        }
+
+        $adminNotesHtml = '';
+        if (!empty(trim($notes))) {
+            $adminNotesHtml = '<div class="admin-notes"><strong>Admin Notes:</strong><br>' . nl2br(htmlspecialchars($notes)) . '</div>';
+        }
 
         return <<<EOT
         <!DOCTYPE html>
@@ -498,81 +517,66 @@ class AdmissionController
         <head>
             <meta charset="utf-8">
             <style>
-                body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; }
-                .container { max-width: 600px; margin: 0 auto; background: #f9f9f9; padding: 20px; border-radius: 8px; }
-                .header { background: linear-gradient(135deg, #1d3f7a 0%, #22c3e3 100%); color: white; padding: 30px; border-radius: 8px 8px 0 0; text-align: center; }
-                .header h1 { margin: 0; font-size: 24px; }
-                .content { background: white; padding: 30px; border-radius: 0 0 8px 8px; }
-                .success-badge { background: #d1fae5; border-left: 4px solid #10b981; color: #065f46; padding: 12px 16px; border-radius: 6px; margin-bottom: 20px; }
-                .info-box { background: #eef6ff; border-left: 4px solid #22c3e3; padding: 16px; margin-bottom: 20px; border-radius: 6px; }
-                .info-label { font-size: 12px; color: #556f91; text-transform: uppercase; font-weight: 600; margin-bottom: 4px; }
-                .info-value { font-size: 16px; color: #0b1b35; font-weight: 600; }
-                .fee-section { background: #fffbeb; border-left: 4px solid #f59e0b; padding: 16px; margin-bottom: 20px; border-radius: 6px; }
-                .fee-amount { font-size: 20px; font-weight: 700; color: #b45309; }
-                .button { display: inline-block; background: linear-gradient(135deg, #1d3f7a 0%, #22c3e3 100%); color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin-top: 10px; }
-                .footer { text-align: center; color: #556f91; font-size: 12px; margin-top: 20px; padding-top: 20px; border-top: 1px solid #e5e7eb; }
-                .admin-notes { background: #f3f4f6; padding: 12px; border-radius: 6px; font-size: 13px; color: #374151; }
+                body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; background: #eef2ff; margin: 0; padding: 0; }
+                .container { max-width: 640px; margin: 0 auto; background: #ffffff; padding: 28px; border-radius: 22px; box-shadow: 0 26px 80px rgba(15, 23, 42, 0.12); }
+                .header { background: linear-gradient(135deg, #0f172a 0%, #2563eb 100%); color: white; padding: 28px; border-radius: 18px 18px 0 0; text-align: center; }
+                .header h1 { margin: 0; font-size: 28px; }
+                .content { background: #f8fafc; padding: 30px; border-radius: 0 0 18px 18px; }
+                .success-badge { background: #dcfce7; border-left: 4px solid #22c55e; color: #14532d; padding: 16px 18px; border-radius: 14px; margin-bottom: 24px; font-weight: 700; }
+                .info-box { background: #eff6ff; border-left: 4px solid #2563eb; padding: 18px; margin-bottom: 20px; border-radius: 14px; }
+                .info-label { font-size: 12px; color: #475569; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+                .info-value { font-size: 18px; color: #0f172a; font-weight: 700; }
+                .fee-section { background: #fffbeb; border-left: 4px solid #f59e0b; padding: 18px; margin-bottom: 24px; border-radius: 14px; }
+                .fee-amount { font-size: 24px; font-weight: 800; color: #c2410c; margin: 0; }
+                .button { display: inline-block; background: linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%); color: white; text-decoration: none; padding: 14px 32px; border-radius: 999px; font-weight: 700; margin-top: 20px; }
+                .footer { text-align: center; color: #64748b; font-size: 13px; margin-top: 28px; line-height: 1.7; }
+                .admin-notes { background: #f1f5f9; padding: 16px; border-radius: 12px; font-size: 14px; color: #1e293b; }
+                ol { margin: 0 0 0 18px; padding: 0; }
+                li { margin-bottom: 12px; }
             </style>
         </head>
         <body>
             <div class="container">
                 <div class="header">
-                    <i style="font-size: 32px;">✓</i>
                     <h1>Admission Approved!</h1>
-                    <p>Congratulations on your admission to $collegeName</p>
+                    <p style="margin: 12px 0 0 0; font-size: 15px; opacity: 0.85;">Your admission is now approved. Complete fee payment to confirm your seat.</p>
                 </div>
                 <div class="content">
-                    <div class="success-badge">
-                        <strong>Your admission has been approved!</strong> Proceed to complete the fee payment to finalize your enrollment.
-                    </div>
+                    <div class="success-badge">✅ Your application has been approved by the admissions team.</div>
 
-                    <h2 style="color: #0b1b35; margin-top: 0;">Dear $studentName,</h2>
-                    <p>We are pleased to inform you that your admission application to $collegeName has been <strong>approved</strong> by our admissions committee.</p>
+                    <h2 style="color: #0f172a; margin-top: 0;">Hello $studentName,</h2>
+                    <p style="color: #475569;">Congratulations! Your admission application to $collegeName has been approved. Please follow the payment instructions below to secure your enrollment.</p>
 
                     <div class="info-box">
-                        <div class="info-label">Your Student ID</div>
+                        <div class="info-label">Student ID</div>
                         <div class="info-value">$studentId</div>
                     </div>
 
-                    <h3 style="color: #0b1b35;">Next Steps: Fee Payment</h3>
+                    {$scheduleBlock}
+
                     <div class="fee-section">
-                        <p style="margin: 0 0 10px 0;"><strong>College Fees Due:</strong></p>
-                        <div class="fee-amount">₹ $feeAmount</div>
-                        <p style="margin: 10px 0 0 0; font-size: 13px; color: #92400e;">Please complete your fee payment to secure your seat.</p>
+                        <p style="margin: 0 0 10px 0; font-size: 14px; color: #475569;"><strong>College Fees Due</strong></p>
+                        <p class="fee-amount">₹ $feeAmount</p>
+                        <p style="margin: 10px 0 0 0; color: #7c3aed;">Pay your fees between the selected window to avoid seat cancellation.</p>
                     </div>
 
-                    <h3 style="color: #0b1b35;">Payment Instructions:</h3>
-                    <ol style="color: #556f91;">
-                        <li>Log in to your student portal using your Student ID</li>
-                        <li>Navigate to the Fees section</li>
-                        <li>Select your payment method (Online/Cash)</li>
-                        <li>Complete the payment process</li>
+                    <h3 style="color: #0f172a; margin-bottom: 12px;">What to do next</h3>
+                    <ol style="color: #475569;">
+                        <li>Login to the student portal using your credentials.</li>
+                        <li>Open the Fees section and choose your payment mode.</li>
+                        <li>Complete payment securely online or in person as instructed.</li>
+                        <li>Save your payment confirmation for future reference.</li>
                     </ol>
 
-                    <p style="margin-top: 20px;">
-                        <a href="<?= BASE_URL ?>student-login" class="button">Go to Student Portal</a>
+                    <p style="text-align: center;">
+                        <a href="{$portalUrl}" class="button">Go to Student Portal</a>
                     </p>
 
-                    <h3 style="color: #0b1b35;">Important Information:</h3>
-                    <ul style="color: #556f91;">
-                        <li>You must complete the fee payment within 7 days to secure your admission</li>
-                        <li>Your admission is provisional until fee payment is confirmed</li>
-                        <li>For any queries, contact the admissions office</li>
-                    </ul>
-
-                    <?php if (!empty($notes)): ?>
-                    <div class="admin-notes">
-                        <strong>Admin Notes:</strong><br>
-                        <?= nl2br(htmlspecialchars($notes)) ?>
-                    </div>
-                    <?php endif; ?>
+                    {$adminNotesHtml}
 
                     <div class="footer">
-                        <p><strong>$collegeName</strong><br>
-                        Ghantikeri, HUBLI – 580 020<br>
-                        Email: admissions@college.edu<br>
-                        Phone: +91-836-2XX-XXXX</p>
-                        <p>This is an automated email. Please do not reply to this email.</p>
+                        <p><strong>$collegeName</strong><br>Ghantikeri, HUBLI – 580 020</p>
+                        <p>This is an automated message. Do not reply to this email directly.</p>
                     </div>
                 </div>
             </div>
@@ -585,6 +589,8 @@ class AdmissionController
     {
         $collegeName = 'Nehru BBA & BCA College';
         $studentName = htmlspecialchars($admission['full_name']);
+        $portalUrl = BASE_URL . 'student-login';
+        $adminNotesHtml = '<div class="admin-notes">' . nl2br(htmlspecialchars($notes)) . '</div>';
 
         return <<<EOT
         <!DOCTYPE html>
@@ -592,16 +598,18 @@ class AdmissionController
         <head>
             <meta charset="utf-8">
             <style>
-                body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; }
-                .container { max-width: 600px; margin: 0 auto; background: #f9f9f9; padding: 20px; border-radius: 8px; }
-                .header { background: linear-gradient(135deg, #1d3f7a 0%, #22c3e3 100%); color: white; padding: 30px; border-radius: 8px 8px 0 0; text-align: center; }
-                .header h1 { margin: 0; font-size: 24px; }
-                .content { background: white; padding: 30px; border-radius: 0 0 8px 8px; }
-                .warning-badge { background: #fef3c7; border-left: 4px solid #f59e0b; color: #92400e; padding: 12px 16px; border-radius: 6px; margin-bottom: 20px; }
-                .info-box { background: #fee2e2; border-left: 4px solid #ef4444; padding: 16px; margin-bottom: 20px; border-radius: 6px; }
-                .admin-notes { background: #f3f4f6; padding: 12px; border-radius: 6px; font-size: 13px; color: #374151; }
-                .button { display: inline-block; background: linear-gradient(135deg, #1d3f7a 0%, #22c3e3 100%); color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin-top: 10px; }
-                .footer { text-align: center; color: #556f91; font-size: 12px; margin-top: 20px; padding-top: 20px; border-top: 1px solid #e5e7eb; }
+                body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; background: #f8fafc; margin: 0; padding: 0; }
+                .container { max-width: 640px; margin: 0 auto; background: #ffffff; padding: 28px; border-radius: 22px; box-shadow: 0 26px 80px rgba(15, 23, 42, 0.12); }
+                .header { background: linear-gradient(135deg, #1d3f7a 0%, #22c3e3 100%); color: white; padding: 28px; border-radius: 18px 18px 0 0; text-align: center; }
+                .header h1 { margin: 0; font-size: 28px; }
+                .content { background: #ffffff; padding: 30px; border-radius: 0 0 18px 18px; }
+                .warning-badge { background: #fef3c7; border-left: 4px solid #f59e0b; color: #92400e; padding: 16px 18px; border-radius: 14px; margin-bottom: 24px; }
+                .info-box { background: #fee2e2; border-left: 4px solid #ef4444; padding: 18px; margin-bottom: 20px; border-radius: 14px; }
+                .admin-notes { background: #f3f4f6; padding: 14px; border-radius: 12px; font-size: 14px; color: #374151; margin-top: 12px; }
+                .button { display: inline-block; background: linear-gradient(135deg, #1d3f7a 0%, #22c3e3 100%); color: white; padding: 14px 30px; text-decoration: none; border-radius: 999px; margin-top: 18px; }
+                .footer { text-align: center; color: #64748b; font-size: 13px; margin-top: 28px; line-height: 1.7; }
+                ol { margin: 0 0 0 18px; padding: 0; }
+                li { margin-bottom: 12px; }
             </style>
         </head>
         <body>
@@ -609,7 +617,7 @@ class AdmissionController
                 <div class="header">
                     <i style="font-size: 32px;">ℹ</i>
                     <h1>Application Review</h1>
-                    <p>Action Required for Your Admission Application</p>
+                    <p style="margin: 12px 0 0 0; font-size: 15px; opacity: 0.85;">Your application requires some updates before we can move forward.</p>
                 </div>
                 <div class="content">
                     <div class="warning-badge">
@@ -617,13 +625,11 @@ class AdmissionController
                     </div>
 
                     <h2 style="color: #0b1b35; margin-top: 0;">Dear $studentName,</h2>
-                    <p>Thank you for submitting your admission application to $collegeName. We have reviewed your application and require you to make some corrections before we can proceed.</p>
+                    <p style="color: #475569;">Thank you for submitting your admission application to $collegeName. We have reviewed your application and require you to make some corrections before we can proceed.</p>
 
                     <div class="info-box">
                         <h3 style="margin-top: 0; color: #991b1b;">Items to Correct:</h3>
-                        <div class="admin-notes">
-                            <?= nl2br(htmlspecialchars($notes)) ?>
-                        </div>
+                        {$adminNotesHtml}
                     </div>
 
                     <h3 style="color: #0b1b35;">What to Do Next:</h3>
@@ -634,8 +640,8 @@ class AdmissionController
                         <li>We will review your updated application within 2-3 business days</li>
                     </ol>
 
-                    <p style="margin-top: 20px;">
-                        <a href="<?= BASE_URL ?>student-login" class="button">Go to Student Portal</a>
+                    <p style="margin-top: 20px; text-align: center;">
+                        <a href="{$portalUrl}" class="button">Go to Student Portal</a>
                     </p>
 
                     <h3 style="color: #0b1b35;">Need Help?</h3>
@@ -686,16 +692,25 @@ class AdmissionController
         ];
 
         foreach ($fileFields as $fieldName => $dbField) {
-            if (isset($_FILES[$fieldName]) && $_FILES[$fieldName]['error'] === UPLOAD_ERR_OK) {
+            if (isset($_FILES[$fieldName])) {
                 $file = $_FILES[$fieldName];
-                $fileName = uniqid() . '_' . basename($file['name']);
-                $filePath = $uploadDir . $fileName;
+                if ($file['error'] === UPLOAD_ERR_OK) {
+                    $fileName = uniqid() . '_' . basename($file['name']);
+                    $filePath = $uploadDir . $fileName;
 
-                if (move_uploaded_file($file['tmp_name'], $filePath)) {
-                    $uploadedFiles[$dbField] = 'uploads/admissions/' . $fileName;
-                } else {
-                    // Handle upload error
-                    header('Location: ' . BASE_URL . 'admission-success&error=file_upload_failed');
+                    error_log('AdmissionController::submitFullAdmission - Uploading field ' . $fieldName . ' file ' . $file['name']);
+
+                    if (move_uploaded_file($file['tmp_name'], $filePath)) {
+                        $uploadedFiles[$dbField] = 'uploads/admissions/' . $fileName;
+                        error_log('AdmissionController::submitFullAdmission - Uploaded to ' . $filePath);
+                    } else {
+                        error_log('AdmissionController::submitFullAdmission - move_uploaded_file failed for ' . $file['name'] . ' tmp ' . $file['tmp_name']);
+                        header('Location: ' . BASE_URL . 'admission-success&error=file_upload_failed');
+                        exit();
+                    }
+                } elseif ($file['error'] !== UPLOAD_ERR_NO_FILE) {
+                    error_log('AdmissionController::submitFullAdmission - Upload error for ' . $fieldName . ': ' . $file['error']);
+                    header('Location: ' . BASE_URL . 'admission-success&error=file_upload_error');
                     exit();
                 }
             }

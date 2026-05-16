@@ -72,14 +72,17 @@ class AdminController
             exit();
         }
 
-        // Department (manual)
-        if (
-            !empty($_POST['department_custom']) &&
-            !preg_match("/^[A-Za-z ]+$/", $_POST['department_custom'])
-        ) {
-            header('Location: ' . BASE_URL . $redirect . '&msg=invalid_input');
-            exit();
-        } {
+        $departmentCustom = trim($_POST['department_custom'] ?? '');
+        if ($departmentCustom !== '') {
+            if (!preg_match("/^[A-Za-z ]+$/", $departmentCustom)) {
+                header('Location: ' . BASE_URL . $redirect . '&msg=invalid_input');
+                exit();
+            }
+            $department = $departmentCustom;
+        }
+
+        $department = trim($department);
+        if ($department !== '' && !preg_match("/^[A-Za-z ]+$/", $department)) {
             header('Location: ' . BASE_URL . $redirect . '&msg=invalid_input');
             exit();
         }
