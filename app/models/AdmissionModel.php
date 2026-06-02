@@ -25,6 +25,12 @@ class AdmissionModel
             email VARCHAR(255) NULL,
             mobile_no VARCHAR(15) NULL,
             course_applied ENUM('BBA','BCA') NULL,
+            photo VARCHAR(500) NULL,
+            sslc_marks_card VARCHAR(500) NULL,
+            puc_marks_card VARCHAR(500) NULL,
+            aadhar_card VARCHAR(500) NULL,
+            candidate_signature VARCHAR(500) NULL,
+            parent_signature VARCHAR(500) NULL,
             puc_institute VARCHAR(255) NOT NULL,
             last_attended VARCHAR(255) NOT NULL,
             puc_subjects TEXT NOT NULL,
@@ -51,7 +57,13 @@ class AdmissionModel
             'registration_no' => 'VARCHAR(100) NULL AFTER admission_type',
             'email' => 'VARCHAR(255) NULL AFTER registration_no',
             'mobile_no' => 'VARCHAR(15) NULL AFTER email',
-            'course_applied' => "ENUM('BBA','BCA') NULL AFTER mobile_no"
+            'course_applied' => "ENUM('BBA','BCA') NULL AFTER mobile_no",
+            'photo' => 'VARCHAR(500) NULL AFTER course_applied',
+            'sslc_marks_card' => 'VARCHAR(500) NULL AFTER photo',
+            'puc_marks_card' => 'VARCHAR(500) NULL AFTER sslc_marks_card',
+            'aadhar_card' => 'VARCHAR(500) NULL AFTER puc_marks_card',
+            'candidate_signature' => 'VARCHAR(500) NULL AFTER aadhar_card',
+            'parent_signature' => 'VARCHAR(500) NULL AFTER candidate_signature'
         ];
 
         foreach ($columnsToAdd as $columnName => $columnType) {
@@ -88,6 +100,12 @@ class AdmissionModel
             email,
             mobile_no,
             course_applied,
+            photo,
+            sslc_marks_card,
+            puc_marks_card,
+            aadhar_card,
+            candidate_signature,
+            parent_signature,
             puc_institute,
             last_attended,
             puc_subjects,
@@ -107,6 +125,12 @@ class AdmissionModel
             :email,
             :mobile_no,
             :course_applied,
+            :photo,
+            :sslc_marks_card,
+            :puc_marks_card,
+            :aadhar_card,
+            :candidate_signature,
+            :parent_signature,
             :puc_institute,
             :last_attended,
             :puc_subjects,
@@ -128,6 +152,12 @@ class AdmissionModel
         $stmt->bindValue(':email', $data['email'] ?? null);
         $stmt->bindValue(':mobile_no', $data['mobile_no'] ?? null);
         $stmt->bindValue(':course_applied', $data['course_applied'] ?? null);
+        $stmt->bindValue(':photo', $data['photo'] ?? null);
+        $stmt->bindValue(':sslc_marks_card', $data['sslc_marks_card'] ?? null);
+        $stmt->bindValue(':puc_marks_card', $data['puc_marks_card'] ?? null);
+        $stmt->bindValue(':aadhar_card', $data['aadhar_card'] ?? null);
+        $stmt->bindValue(':candidate_signature', $data['candidate_signature'] ?? null);
+        $stmt->bindValue(':parent_signature', $data['parent_signature'] ?? null);
         $stmt->bindParam(':puc_institute', $data['puc_institute']);
         $stmt->bindParam(':last_attended', $data['last_attended']);
         $stmt->bindParam(':puc_subjects', $data['puc_subjects']);
@@ -135,9 +165,32 @@ class AdmissionModel
         $stmt->bindValue(':payment_status', $data['payment_status']);
         $stmt->bindValue(':status', $data['status']);
 
+
+
         if ($stmt->execute()) {
             return $this->getAdmissionByUuid($uuid);
         }
+
+        $uploadedFiles = [
+            'photo' => $data['photo'] ?? null,
+            'sslc_marks_card' => $data['sslc_marks_card'] ?? null,
+            'puc_marks_card' => $data['puc_marks_card'] ?? null,
+            'aadhar_card' => $data['aadhar_card'] ?? null,
+            'candidate_signature' => $data['candidate_signature'] ?? null,
+            'parent_signature' => $data['parent_signature'] ?? null,
+        ];
+
+        $uploadedFileNames = array_filter($uploadedFiles, function ($value) {
+            return !empty($value);
+        });
+
+        error_log('Admission insert failed. Uploaded files: ' . implode(', ', array_map(
+            function ($key, $value) {
+                return "$key={$value}";
+            },
+            array_keys($uploadedFileNames),
+            $uploadedFileNames
+        )) . '. SQL error: ' . implode(' | ', $stmt->errorInfo()));
 
         return false;
     }
@@ -250,14 +303,60 @@ class AdmissionModel
         // First ensure all required columns exist
         $this->ensureFullAdmissionColumnsExist();
 
-        // Find admission by application_no
+        // Support older form field naming for Aadhaar input
+        if (isset($data['aadhar_no']) && !isset($data['aadhar_number'])) {
+            $data['aadhar_number'] = $data['aadhar_no'];
+        }
+        // Candidate name mapping
+        if (isset($data['candidate_name']) && !isset($data['full_name'])) {
+            $data['full_name'] = $data['candidate_name'];
+        }
+
+        // Subject/Marks mapping
+        for ($i = 1; $i <= 6; $i++) {
+
+            // Subject Name
+            if (isset($data["subject_$i"])) {
+                $data["marks_subject_$i"] = $data["subject_$i"];
+            }
+
+            // Total Marks
+            if (isset($data["total_$i"])) {
+                $data["marks_max_$i"] = $data["total_$i"];
+            }
+
+            // Obtained Marks
+            if (isset($data["marks_$i"])) {
+                $data["marks_obtained_$i"] = $data["marks_$i"];
+            }
+        }
+
+        // Candidate name mapping
+        
+
+        // Try to find admission by admission_number first
         $query = "SELECT id FROM admissions WHERE admission_number = :application_no LIMIT 1";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':application_no', $data['application_no']);
         $stmt->execute();
         $admission = $stmt->fetch(PDO::FETCH_ASSOC);
 
+        // Fallback: try registration_no if admission not found
+        if (!$admission && isset($data['registration_no'])) {
+
+            $query = "SELECT id FROM admissions WHERE registration_no = :registration_no LIMIT 1";
+
+            $stmt = $this->conn->prepare($query);
+
+            $stmt->bindParam(':registration_no', $data['registration_no']);
+
+            $stmt->execute();
+
+            $admission = $stmt->fetch(PDO::FETCH_ASSOC);
+        }
+
         if (!$admission) {
+            error_log('No admission found with application number: ' . $data['application_no']);
             return false;
         }
 
@@ -268,13 +367,45 @@ class AdmissionModel
         $params = [':id' => $id];
 
         $updatableFields = [
-            'registration_no', 'candidate_name', 'father_name', 'mother_name', 'surname', 'gender',
-            'date_of_birth', 'aadhar_number', 'category', 'category_cert_no', 'annual_income',
-            'income_caste_certificate_no', 'sslc_reg_no', 'address', 'permanent_address', 'city',
-            'state', 'postal_code', 'district', 'taluk', 'area_type', 'ward_no', 'mobile_no',
-            'parent_mobile_no', 'email', 'overall_percentage', 'course_applied', 'last_attended_institution',
-            'year_of_admission', 'year_of_passing', 'declaration_1', 'declaration_2', 'declaration_3',
-            'photo', 'sslc_marks_card', 'puc_marks_card', 'aadhar_card', 'candidate_signature', 'parent_signature'
+            'registration_no',
+            'candidate_name',
+            'father_name',
+            'mother_name',
+            'surname',
+            'gender',
+            'date_of_birth',
+            'aadhar_number',
+            'category',
+            'category_cert_no',
+            'annual_income',
+            'income_caste_certificate_no',
+            'sslc_reg_no',
+            'address',
+            'permanent_address',
+            'city',
+            'state',
+            'postal_code',
+            'district',
+            'taluk',
+            'area_type',
+            'ward_no',
+            'mobile_no',
+            'parent_mobile_no',
+            'email',
+            'overall_percentage',
+            'course_applied',
+            'last_attended_institution',
+            'year_of_admission',
+            'year_of_passing',
+            'declaration_1',
+            'declaration_2',
+            'declaration_3',
+            'photo',
+            'sslc_marks_card',
+            'puc_marks_card',
+            'aadhar_card',
+            'candidate_signature',
+            'parent_signature'
         ];
 
         foreach ($updatableFields as $field) {
@@ -322,10 +453,13 @@ class AdmissionModel
         }
 
         if (empty($fields)) {
+            error_log('No fields to update for admission ID: ' . $id);
             return false;
         }
 
         $query = "UPDATE admissions SET " . implode(', ', $fields) . ", status = 'application_submitted', updated_at = NOW() WHERE id = :id";
+
+        error_log($query . ' | Params: ' . json_encode($params));
         $stmt = $this->conn->prepare($query);
 
         foreach ($params as $key => $value) {
@@ -428,36 +562,53 @@ class AdmissionModel
         }
     }
 
-    public function updateAdmissionApprovalStatus($id, $status, $notes = '', $approvedBy = null, $paymentSchedule = null)
-    {
-        try {
-            $fields = [
-                'admin_approval_status = :status',
-                'admin_approval_notes = :notes',
-                'admin_approved_by = :approved_by',
-                'admin_approved_at = NOW()'
-            ];
+   public function updateAdmissionApprovalStatus($id, $status, $notes = '', $approvedBy = null, $paymentSchedule = null)
+{
+    try {
 
-            $params = [
-                ':status' => $status,
-                ':notes' => $notes,
-                ':approved_by' => $approvedBy,
-                ':id' => $id
-            ];
+        // IMPORTANT:
+        // When admin approves admission,
+        // also move system status to 'admitted'
+        $systemStatus = ($status === 'approved') ? 'admitted' : 'rejected';
 
-            if ($paymentSchedule !== null) {
-                $fields[] = 'admin_payment_schedule = :admin_payment_schedule';
-                $params[':admin_payment_schedule'] = $paymentSchedule;
-            }
+        $fields = [
+            'admin_approval_status = :status',
+            'status = :system_status',
+            'admin_approval_notes = :notes',
+            'admin_approved_by = :approved_by',
+            'admin_approved_at = NOW()'
+        ];
 
-            $query = "UPDATE admissions SET " . implode(', ', $fields) . ", updated_at = NOW() WHERE id = :id";
-            $stmt = $this->conn->prepare($query);
-            $result = $stmt->execute($params);
+        $params = [
+            ':status' => $status,
+            ':system_status' => $systemStatus,
+            ':notes' => $notes,
+            ':approved_by' => $approvedBy,
+            ':id' => $id
+        ];
 
-            return $result;
-        } catch (Exception $e) {
-            error_log('AdmissionModel::updateAdmissionApprovalStatus - ' . $e->getMessage());
-            return false;
+        if ($paymentSchedule !== null) {
+            $fields[] = 'admin_payment_schedule = :admin_payment_schedule';
+            $params[':admin_payment_schedule'] = $paymentSchedule;
         }
+
+        $query = "UPDATE admissions 
+                  SET " . implode(', ', $fields) . ", 
+                  updated_at = NOW() 
+                  WHERE id = :id";
+
+        $stmt = $this->conn->prepare($query);
+
+        return $stmt->execute($params);
+
+    } catch (Exception $e) {
+
+        error_log(
+            'AdmissionModel::updateAdmissionApprovalStatus - ' 
+            . $e->getMessage()
+        );
+
+        return false;
     }
+}
 }

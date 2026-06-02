@@ -317,58 +317,6 @@ if ($isEditMode) {
                             <div class="card-body">
 
                                 <h5 class="mb-3">
-                                    Previous Installments
-                                </h5>
-
-                                <?php if (!empty($installments)): ?>
-
-                                    <table class="table table-bordered">
-
-                                        <thead>
-                                            <tr>
-                                                <th>Installment</th>
-                                                <th>Amount</th>
-                                                <th>Paid Date</th>
-                                            </tr>
-                                        </thead>
-
-                                        <tbody>
-
-                                            <?php foreach ($installments as $ins): ?>
-
-                                                <tr>
-
-                                                    <td>
-                                                        Installment <?= htmlspecialchars($ins['installment_no']) ?>
-                                                    </td>
-
-                                                    <td>
-                                                        ₹<?= number_format($ins['amount'], 2) ?>
-                                                    </td>
-
-                                                    <td>
-                                                        <?= date('d-m-Y', strtotime($ins['paid_date'])) ?>
-                                                    </td>
-
-                                                </tr>
-
-                                            <?php endforeach; ?>
-
-                                        </tbody>
-
-                                    </table>
-
-                                <?php else: ?>
-
-                                    <p class="text-muted">
-                                        No installment paid yet.
-                                    </p>
-
-                                <?php endif; ?>
-
-                                <hr>
-
-                                <h5 class="mb-3">
                                     Add New Installment
                                 </h5>
 

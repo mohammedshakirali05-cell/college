@@ -81,6 +81,7 @@
             <tr><td class="slno">8.</td><td class="particular">Kar. Uni. Sports Fees <span class="candidate-dash">--</span></td><td><input type="text" /></td></tr>
             <tr><td class="slno">9.</td><td class="particular">Kar. Uni. Development Fees <span class="candidate-dash">--</span></td><td><input type="text" /></td></tr>
             <tr><td class="slno">10.</td><td class="particular">Enhance Fees <span class="candidate-dash">--</span></td><td><input type="text" /></td></tr>
+            <tr><td class="slno">11.</td><td class="particular">Penalty <span class="candidate-dash">--</span></td><td><input type="text" /></td></tr>
             <tr style="background: #f3f4f6;">
                 <td colspan="2" style="text-align: right;"><strong>TOTAL</strong></td>
                 <td><input type="text" /></td>

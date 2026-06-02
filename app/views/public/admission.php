@@ -274,7 +274,6 @@
                 <div class="card admission-form-card">
                     <div class="row g-0">
                         <div class="col-lg-5 admission-info p-4 p-lg-5 text-white text-center">
-                            <img src="/college/public/assets/images/college-logo.png" alt="Nehru College Logo" class="admission-logo mb-3">
                             <div class="info-badge">Admission Portal</div>
                             <h3 class="fw-bold mb-3">Join Nehru BBA & BCA College</h3>
                             <p class="mb-4 opacity-75">Take the first step towards your future. Complete your application securely.</p>

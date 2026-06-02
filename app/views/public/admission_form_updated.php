@@ -921,7 +921,7 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label for="appNo">Application No. <span class="required">*</span></label>
-                        <input type="text" class="form-control" id="appNo" name="application_no" required readonly>
+                        <input type="text" class="form-control" id="appNo" name="application_no"  value="<?= htmlspecialchars($admission['admission_number']) ?>" required readonly>
                     </div>
                     <div class="form-group">
                         <label for="regNo">PUC / ITI / Diploma. <span class="required">*</span></label>
@@ -1452,11 +1452,11 @@
 
 <script>
     // Auto-generate Application Number
-    function generateAppNo() {
-        const prefix = 'APP';
-        const timestamp = new Date().getTime();
-        return prefix + timestamp;
-    }
+    // function generateAppNo() {
+    //     const prefix = 'APP';
+    //     const timestamp = new Date().getTime();
+    //     return prefix + timestamp;
+    // }
 
     // Preview Photo with Enhanced Validation
     function previewPhoto(event) {
@@ -1777,7 +1777,7 @@
 
     // Initialize
     document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('appNo').value = generateAppNo();
+        // document.getElementById('appNo').value = generateAppNo();
         
         // Add percentage calculation on input
         for(let i = 1; i <= 3; i++) {

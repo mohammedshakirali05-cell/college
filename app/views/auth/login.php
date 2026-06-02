@@ -6,6 +6,28 @@
     <title>Nehru BBA and BCA College | Login</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="/college/public/assets/css/public.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #3b69d4 0%, #1f7faf 45%, #1bdacb 100%) !important;
+        }
+
+        .navbar {
+            background: rgba(15, 23, 42, 0.88) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+        }
+
+        .portal-wrapper {
+            background: transparent;
+            min-height: 100vh;
+            padding: 28px 0;
+        }
+
+        .portal-card {
+            background: rgba(255, 255, 255, 0.96);
+            border: 1px solid rgba(255, 255, 255, 0.32);
+            box-shadow: 0 30px 90px rgba(3, 34, 71, 0.16);
+        }
+    </style>
 </head>
 <body>
 

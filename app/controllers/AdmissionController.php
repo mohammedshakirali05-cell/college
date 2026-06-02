@@ -51,6 +51,43 @@ class AdmissionController
         $mobileNo = trim($_POST['mobile_no'] ?? '');
         $courseApplied = trim($_POST['course_applied'] ?? '');
 
+        $uploadDir = __DIR__ . '/../../public/uploads/admissions/';
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0755, true);
+        }
+
+        $uploadedFiles = [];
+        $fileFields = [
+            'photo' => 'photo',
+            'sslc_marks_card' => 'sslc_marks_card',
+            'puc_marks_card' => 'puc_marks_card',
+            'aadhar_card' => 'aadhar_card',
+            'candidate_signature' => 'candidate_signature',
+            'parent_signature' => 'parent_signature',
+        ];
+
+        foreach ($fileFields as $fieldName => $dbField) {
+            if (!empty($_FILES[$fieldName]) && $_FILES[$fieldName]['error'] !== UPLOAD_ERR_NO_FILE) {
+                $file = $_FILES[$fieldName];
+                if ($file['error'] === UPLOAD_ERR_OK) {
+                    $fileName = uniqid() . '_' . preg_replace('/[^A-Za-z0-9_.-]+/', '_', basename($file['name']));
+                    $filePath = $uploadDir . $fileName;
+
+                    if (move_uploaded_file($file['tmp_name'], $filePath)) {
+                        $uploadedFiles[$dbField] = 'uploads/admissions/' . $fileName;
+                        error_log("File uploaded successfully: " . $fieldName . " -> " . $fileName);
+                    } else {
+                        error_log("File upload failed for: " . $fieldName . " (original: " . $file['name'] . ")");
+                        header('Location: ' . BASE_URL . 'admission&error=file_upload_failed');
+                        exit();
+                    }
+                } else {
+                    header('Location: ' . BASE_URL . 'admission&error=file_upload_error');
+                    exit();
+                }
+            }
+        }
+
         $admissionData = [
             'full_name' => $fullName,
             'father_name' => $fatherName,
@@ -60,6 +97,12 @@ class AdmissionController
             'email' => $email,
             'mobile_no' => $mobileNo,
             'course_applied' => $courseApplied,
+            'photo' => $uploadedFiles['photo'] ?? '',
+            'sslc_marks_card' => $uploadedFiles['sslc_marks_card'] ?? '',
+            'puc_marks_card' => $uploadedFiles['puc_marks_card'] ?? '',
+            'aadhar_card' => $uploadedFiles['aadhar_card'] ?? '',
+            'candidate_signature' => $uploadedFiles['candidate_signature'] ?? '',
+            'parent_signature' => $uploadedFiles['parent_signature'] ?? '',
             'puc_institute' => '',
             'last_attended' => '',
             'puc_subjects' => '',
@@ -674,7 +717,7 @@ class AdmissionController
         }
 
         // Create uploads directory if it doesn't exist
-        $uploadDir = __DIR__ . '/../../uploads/admissions/';
+        $uploadDir = __DIR__ . '/../../public/uploads/admissions/';
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0755, true);
         }
@@ -754,9 +797,10 @@ class AdmissionController
             'declaration_3' => isset($_POST['declaration_3']) ? 1 : 0,
         ];
 
-        // Add uploaded file paths
+        // Add uploaded file paths to admission data
         foreach ($uploadedFiles as $field => $path) {
             $admissionData[$field] = $path;
+            error_log('AdmissionController::submitFullAdmission - Added file path for ' . $field . ': ' . $path);
         }
 
         // Handle marks data
