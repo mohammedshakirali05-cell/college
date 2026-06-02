@@ -205,9 +205,9 @@ if (!$admission) {
         }
 
         .info-value {
-            font-size: 15px;
+            font-size: 12px;
             color: var(--text-primary);
-            font-weight: 600;
+            font-weight: 500;
         }
 
         /* Documents Section */
@@ -595,7 +595,7 @@ if (!$admission) {
 
         .modal-header .modal-title {
             font-size: 18px;
-            font-weight: 700;
+            font-weight: 00;
             letter-spacing: 0.5px;
             display: flex;
             align-items: center;
@@ -625,7 +625,7 @@ if (!$admission) {
         .document-viewer {
             width: 100%;
             max-width: 96vw;
-            max-height: 82vh;
+            max-height: 500vh;
             min-height: 60vh;
             background: white;
             border-radius: 16px;
@@ -669,7 +669,7 @@ if (!$admission) {
         }
 
         .modal-lg {
-            max-width: 95vw;
+            max-width: 35vw;
         }
 
         /* Loading Spinner for Document Viewer */
@@ -936,14 +936,14 @@ if (!$admission) {
                             <div class="info-label">Course Applied</div>
                             <div class="info-value"><?= htmlspecialchars($admission['course_applied'] ?? '') ?></div>
                         </div>
-                        <div class="info-box">
+                        <!-- <div class="info-box">
                             <div class="info-label">PUC Institute</div>
                             <div class="info-value"><?= htmlspecialchars($admission['puc_institute'] ?? '') ?></div>
                         </div>
                         <div class="info-box">
                             <div class="info-label">Year Last Attended</div>
                             <div class="info-value"><?= htmlspecialchars($admission['last_attended'] ?? '') ?></div>
-                        </div>
+                        </div> -->
                         <div class="info-box">
                             <div class="info-label">Overall Percentage</div>
                             <div class="info-value"><?= htmlspecialchars($admission['overall_percentage'] ?? '') ?>%</div>
